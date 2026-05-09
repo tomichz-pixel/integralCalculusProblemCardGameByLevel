@@ -207,7 +207,7 @@ window.MathJax = {
     padding:20px;
     border-radius:10px;
     width:95%;
-    max-width:420px;
+    max-width:720px; /* ← 広げた */
     max-height: 85vh;
     display: flex;
     flex-direction: column;
@@ -229,6 +229,23 @@ window.MathJax = {
     border-radius: 6px;
     font-weight: bold;
     cursor: pointer;
+}
+  
+#math-game .formula-box {
+    font-size:1.1em;
+    margin:10px 0;
+    padding:12px;
+    border:2px solid #2196F3;
+    border-radius:8px;
+    text-align:center;
+
+    overflow-x:auto;
+    overflow-y:hidden;
+
+    white-space:nowrap;
+    -webkit-overflow-scrolling:touch;
+
+    background:white;
 }
 </style>
 
@@ -274,62 +291,460 @@ window.MathJax = {
 (function(){
 
 // masterData は省略せずそのまま保持
-const masterData = [
-  { id: "L1_01", level: "1_教科書レベル", key: "基本公式：xのn乗の積分 (n≠-1)", latexQ: "\\int x^n \\,dx \\quad (n \\neq -1)", latexA: "\\frac{1}{n+1}x^{n+1} + C", note: "公式： $\\int x^n dx = \\frac{x^{n+1}}{n+1} + C$<br>$\\implies$ 微分して $x^n$ になる関数を逆算します" },
-  { id: "L1_02", level: "1_教科書レベル", key: "基本公式：1/x の積分 (対数積分)", latexQ: "\\int \\frac{1}{x} \\,dx", latexA: "\\log |x| + C", note: "公式： $\\int \\frac{1}{x} dx = \\log |x| + C$" },
-  { id: "L1_03", level: "1_教科書レベル", key: "指数関数：自然対数の底 e の積分", latexQ: "\\int e^x \\,dx", latexA: "e^x + C", note: "公式： $\\int e^x dx = e^x + C$" },
-  { id: "L1_04", level: "1_教科書レベル", key: "指数関数：底が e 以外の積分", latexQ: "\\int a^x \\,dx \\quad (a > 0, a \\neq 1)", latexA: "\\frac{a^x}{\\log a} + C", note: "公式： $\\int a^x dx = \\frac{a^x}{\\log a} + C$" },
-  { id: "L1_05", level: "1_教科書レベル", key: "三角関数：sin x の積分", latexQ: "\\int \\sin x \\,dx", latexA: "-\\cos x + C", note: "公式： $\\int \\sin x dx = -\\cos x + C$" },
-  { id: "L1_06", level: "1_教科書レベル", key: "三角関数：cos x の積分", latexQ: "\\int \\cos x \\,dx", latexA: "\\sin x + C", note: "公式： $\\int \\cos x dx = \\sin x + C$" },
-  { id: "L1_07", level: "1_教科書レベル", key: "置換積分：1次式の累乗の積分", latexQ: "\\int (ax+b)^n \\,dx \\quad (n \\neq -1)", latexA: "\\frac{1}{a(n+1)}(ax+b)^{n+1} + C", note: "合成関数の微分の逆で、係数 $a$ で割ります" },
-  { id: "L2_01", level: "2_難関大入試基礎レベル", key: "面積公式：放物線と直線の交点 (1/6公式)", latexQ: "\\int_\\alpha^\\beta (x-\\alpha)(x-\\beta) \\,dx", latexA: "-\\frac{1}{6}(\\beta-\\alpha)^3", note: "放物線と直線が囲む面積を瞬時に出す必須公式です" },
-  { id: "L2_02", level: "2_難関大入試基礎レベル", key: "面積公式：3次関数と接線 (1/12公式)", latexQ: "\\int_\\alpha^\\beta (x-\\alpha)(x-\\beta)^2 \\,dx", latexA: "\\frac{1}{12}(\\beta-\\alpha)^4", note: "中身を $(x-\\beta)+(\\beta-\\alpha)$ に分割して展開します" },
-  { id: "L2_03", level: "2_難関大入試基礎レベル", key: "面積公式：放物線と接線 (1/3公式)", latexQ: "\\int_\\alpha^\\beta (x-\\alpha)^2 \\,dx", latexA: "\\frac{1}{3}(\\beta-\\alpha)^3", note: "$[\\frac{1}{3}(x-\\alpha)^3]_\\alpha^\\beta = \\frac{1}{3}(\\beta-\\alpha)^3$" },
-  { id: "L2_04", level: "2_難関大入試基礎レベル", key: "定積分の基本：絶対値を含む関数", latexQ: "\\int_0^2 |x^2-x| \\,dx", latexA: "1", note: "$x=1$ で符号が変わります" },
-  { id: "L2_05", level: "2_難関大入試基礎レベル", key: "対称性：奇関数の定積分", latexQ: "\\int_{-a}^{a} f(x) \\,dx \\quad (f(-x)=-f(x))", latexA: "0", note: "奇関数（原点対称）は相殺されます" },
-  { id: "L2_06", level: "2_難関大入試基礎レベル", key: "対称性：偶関数の定積分", latexQ: "\\int_{-a}^{a} f(x) \\,dx \\quad (f(-x)=f(x))", latexA: "2\\int_{0}^{a} f(x) \\,dx", note: "偶関数（y軸対称）は2倍します" },
-  { id: "L2_07", level: "2_難関大入試基礎レベル", key: "図形的直観：三角関数の周期性", latexQ: "\\int_0^{2\\pi} \\sin(nx) \\,dx", latexA: "0", note: "1周期分の定積分は0になります" },
-  { id: "L2_08", level: "2_難関大入試基礎レベル", key: "図形的直観：サインカーブの半波長", latexQ: "\\int_0^\\pi \\sin x \\,dx", latexA: "2", note: "サインカーブの「ひと山」の面積は2です" },
-  { id: "L2_09", level: "2_難関大入試基礎レベル", key: "図形的処理：四分円の面積", latexQ: "\\int_0^1 \\sqrt{1-x^2} \\,dx", latexA: "\\frac{\\pi}{4}", note: "半径1の四半円の面積です" },
-  { id: "L2_10", level: "2_難関大入試基礎レベル", key: "特殊置換：1/(1+x^2) の定積分", latexQ: "\\int_0^1 \\frac{1}{1+x^2} \\,dx", latexA: "\\frac{\\pi}{4}", note: "$x = \\tan\\theta$ と置換します" },
-  { id: "L2_11", level: "2_難関大入試基礎レベル", key: "漸化式：ウォリス積分の基本 (3乗)", latexQ: "\\int_0^{\\frac{\\pi}{2}} \\sin^3 x \\,dx", latexA: "\\frac{2}{3}", note: "ウォリス積分公式 $\\frac{2}{3} \\cdot 1$" },
-  { id: "L2_12", level: "2_難関大入試基礎レベル", key: "万能の対称性：King Property", latexQ: "\\int_0^{\\frac{\\pi}{2}} \\frac{\\sin x}{\\sin x + \\cos x} \\,dx", latexA: "\\frac{\\pi}{4}", note: "$x = \\pi/2 - t$ と置換して加算します" },
-  { id: "L2_13", level: "2_難関大入試基礎レベル", key: "広義積分：ガンマ関数の基礎", latexQ: "\\int_0^\\infty e^{-x} \\,dx", latexA: "1", note: "$\\\\lim_{t \\to \\infty} [-e^{-x}]_0^t = 1$" },
-  { id: "L2_14", level: "2_難関大入試基礎レベル", key: "部分積分：多項式と指数関数", latexQ: "\\int x e^x \\,dx", latexA: "(x-1)e^x + C", note: "$x e^x - \\int e^x dx = (x-1)e^x$" },
-  { id: "L2_15", level: "2_難関大入試基礎レベル", key: "部分積分：対数関数の積分", latexQ: "\\int \\log x \\,dx", latexA: "x \\log x - x + C", note: "$1 \\times \\log x$ と見て部分積分します" },
-  { id: "L3_01", level: "3_国公立大学標準レベル", key: "有理関数の積分：部分分数分解", latexQ: "\\int \\frac{1}{x^2-1} \\,dx", latexA: "\\frac{1}{2} \\log \\left| \\frac{x-1}{x+1} \\right| + C", note: "部分分数分解して積分します" },
-  { id: "L3_02", level: "3_国公立大学標準レベル", key: "対数積分：分子が分母の微分型", latexQ: "\\int \\frac{x}{x^2+1} \\,dx", latexA: "\\frac{1}{2} \\log (x^2+1) + C", note: "$(x^2+1)' = 2x$ を利用します" },
-  { id: "L3_03", level: "3_国公立大学標準レベル", key: "次数下げ：三角関数の2乗", latexQ: "\\int \\sin^2 x \\,dx", latexA: "\\frac{x}{2} - \\frac{\\sin 2x}{4} + C", note: "半角の公式を利用します" },
-  { id: "L3_04", level: "3_国公立大学標準レベル", key: "三角関数の積：積和の公式", latexQ: "\\int \\sin 3x \\cos x \\,dx", latexA: "-\\frac{\\cos 4x}{8} - \\frac{\\cos 2x}{4} + C", note: "積和の公式を利用します" },
-  { id: "L3_05", level: "3_国公立大学標準レベル", key: "置換積分：無理関数を含む定積分", latexQ: "\\int_0^1 x\\sqrt{1-x} \\,dx", latexA: "\\frac{4}{15}", note: "$1-x=t$ とおきます" },
-  { id: "L3_06", level: "3_国公立大学標準レベル", key: "部分積分：多項式(2次)と指数関数", latexQ: "\\int x^2 e^x \\,dx", latexA: "(x^2 - 2x + 2)e^x + C", note: "部分積分を2回繰り返します" },
-  { id: "L3_07", level: "3_国公立大学標準レベル", key: "無理関数の積分：分母の有理化", latexQ: "\\int \\frac{1}{\\sqrt{x+1}+\\sqrt{x}} \\,dx", latexA: "\\frac{2}{3}(x+1)^{\\frac{3}{2}} - \\frac{2}{3}x^{\\frac{3}{2}} + C", note: "分母を有理化します" },
-  { id: "L3_08", level: "3_国公立大学標準レベル", key: "三角関数の積分：奇数乗の処理", latexQ: "\\int \\cos^3 x \\,dx", latexA: "\\sin x - \\frac{\\sin^3 x}{3} + C", note: "$\\cos x(1-\\sin^2 x)$ と変形します" },
-  { id: "L3_09", level: "3_国公立大学標準レベル", key: "部分積分：同形出現 (ループ型)", latexQ: "\\int e^x \\sin x \\,dx", latexA: "\\frac{1}{2} e^x (\\sin x - \\cos x) + C", note: "部分積分で元の形を作ります" },
-  { id: "L3_10", level: "3_国公立大学標準レベル", key: "置換積分：対数関数の微分接触型", latexQ: "\\int \\frac{\\log x}{x} \\,dx", latexA: "\\frac{1}{2} (\\log x)^2 + C", note: "$\\\\log x = t$ とおきます" },
-  { id: "L3_11", level: "3_国公立大学標準レベル", key: "三角関数の積分：tan x の対数積分", latexQ: "\\int \\tan x \\,dx", latexA: "-\\log |\\cos x| + C", note: "$\\\\frac{\\\\sin x}{\\\\cos x}$ と変形します" },
-  { id: "L3_12", level: "3_国公立大学標準レベル", key: "積分方程式：定数項を k と置く解法", latexQ: "f(x) = x + \\int_0^{1/2} f(t) \\,dt", latexA: "f(x) = x + \\frac{1}{4}", note: "定数部分を $k$ とおきます" },
-  { id: "L3_13", level: "3_国公立大学標準レベル", key: "微積分学の基本定理：xの微分", latexQ: "\\frac{d}{dx} \\int_a^x f(t) \\,dt", latexA: "f(x)", note: "$F(x)-F(a)$ を微分します" },
-  { id: "L4_01", level: "4_難関大標準レベル", key: "指数関数と微分の和：e^x{f(x)+f'(x)} 型", latexQ: "\\int e^x (\\sin x + \\cos x) \\,dx", latexA: "e^x \\sin x + C", note: "$(e^x f(x))'$ の形を利用します" },
-  { id: "L4_02", level: "4_難関大標準レベル", key: "特殊置換：1/√(x^2+A) の積分", latexQ: "\\int \\frac{1}{\\sqrt{x^2+A}} \\,dx", latexA: "\\log |x + \\sqrt{x^2+A}| + C", note: "$t = x + \\sqrt{x^2+A}$ と置きます" },
-  { id: "L4_03", level: "4_難関大標準レベル", key: "三角関数の有理式：1/cos x の積分", latexQ: "\\int \\frac{1}{\\cos x} \\,dx", latexA: "\\frac{1}{2} \\log \\left| \\frac{1+\\sin x}{1-\\sin x} \\right| + C", note: "分母分子に $\\cos x$ を掛けて置換します" },
-  { id: "L4_04", level: "4_難関大標準レベル", key: "対称性の利用：x f(sin x) 型", latexQ: "\\int_0^\\pi x \\sin x \\,dx", latexA: "\\pi", note: "$x = \\pi - t$ と置換します" },
-  { id: "L4_05", level: "4_難関大標準レベル", key: "指数関数の分数積分", latexQ: "\\int \\frac{1}{1+e^x} \\,dx", latexA: "x - \\log (1+e^x) + C", note: "分子を $(1+e^x)-e^x$ とします" },
-  { id: "L4_06", level: "4_難関大標準レベル", key: "図形的処理：円の面積 (置換積分)", latexQ: "\\int_0^a \\sqrt{a^2-x^2} \\,dx", latexA: "\\frac{\\pi a^2}{4}", note: "四半円の面積の公式としても有名です" },
-  { id: "L4_07", level: "4_難関大標準レベル", key: "部分積分と特殊積分：log(x^2+1)", latexQ: "\\int \\log(x^2+1) \\,dx", latexA: "x \\log(x^2+1) - 2x + 2\\arctan x + C", note: "部分積分後に有理式を整理します" },
-  { id: "L4_11", level: "4_難関大標準レベル", key: "積分の漸化式：tanのn乗", latexQ: "I_n = \\int_0^{\\frac{\\pi}{4}} \\tan^n x \\,dx \\text{ に対する } I_n + I_{n-2}", latexA: "\\frac{1}{n-1}", note: "$\\\\tan^2 x + 1 = 1/\\\\cos^2 x$ を利用します" },
-  { id: "L4_12", level: "4_難関大標準レベル", key: "和の極限：区分求積法", latexQ: "\\lim_{n \\to \\infty} \\frac{1}{n} \\sum_{k=1}^n \\sin \\left( \\frac{k\\pi}{n} \\right)", latexA: "\\frac{2}{\\pi}", note: "定積分の定義（区分求積法）を使います" },
-  { id: "L4_13", level: "4_難関大標準レベル", key: "定積分の不等式評価", latexQ: "0 \\le x \\le 1 \\text{ における } \\int_0^1 e^{-x^2} \\,dx \\text{ の下限}", latexA: "1 - \\frac{1}{e}", note: "$e^{-x^2} \\ge e^{-x}$ を利用します" },
-  { id: "L5_01", level: "5_超絶技巧レベル", key: "1998年東大後期：King Property", latexQ: "\\int_0^{\\frac{\\pi}{4}} \\log(1+\\tan x) \\,dx", latexA: "\\frac{\\pi}{8} \\log 2", note: "$x = \\pi/4 - t$ と置きます" },
-  { id: "L5_02", level: "5_超絶技巧レベル", key: "対称性の極致：分母分子の相殺", latexQ: "\\int_0^{\\frac{\\pi}{2}} \\frac{\\sqrt{\\sin x}}{\\sqrt{\\sin x}+\\sqrt{\\cos x}} \\,dx", latexA: "\\frac{\\pi}{4}", note: "King Propertyで分母分子を足します" },
-  { id: "L5_03", level: "5_超絶技巧レベル", key: "歴史的難問：オイラーの対数正弦積分", latexQ: "\\int_0^{\\frac{\\pi}{2}} \\log(\\sin x) \\,dx", latexA: "-\\frac{\\pi}{2} \\log 2", note: "倍角公式とKing Propertyを駆使します" },
-  { id: "L5_04", level: "5_超絶技巧レベル", key: "ファインマンの積分技法", latexQ: "\\int_0^1 \\frac{x^b - x^a}{\\log x} \\,dx", latexA: "\\log\\left(\\frac{b+1}{a+1}\\right)", note: "二重積分として順序交換します" },
-  { id: "L5_05", level: "5_超絶技巧レベル", key: "万能置換：ワイエルシュトラス置換", latexQ: "\\int \\frac{1}{2 + \\cos x} \\,dx", latexA: "\\frac{2}{\\sqrt{3}} \\arctan\\left(\\frac{\\tan(x/2)}{\\sqrt{3}}\\right) + C", note: "$t = \\tan(x/2)$ とおきます" },
-  { id: "L5_07", level: "5_超絶技巧レベル", key: "ディリクレ積分 (Sinc関数)", latexQ: "\\int_0^{\\infty} \\frac{\\sin x}{x} \\,dx", latexA: "\\frac{\\pi}{2}", note: "ラプラス変換や二重積分を用います" },
-  { id: "L5_08", level: "5_超絶技巧レベル", key: "パラメータ微分法：ポアソンの積分", latexQ: "\\int_0^{\\pi} \\log(1-2a\\cos x + a^2) \\,dx \\quad (|a| < 1)", latexA: "0", note: "パラメータ $a$ で微分して解きます" },
-  { id: "L5_10", level: "5_超絶技巧レベル", key: "解析学の基本：デルタ関数的挙動", latexQ: "\\lim_{n \\to \\infty} \\int_0^1 nx^n f(x) \\,dx", latexA: "f(1)", note: "部分積分から極限を評価します" },
-  { id: "L5_11", level: "5_超絶技巧レベル", key: "図形的発想の勝利：関数と逆関数の和", latexQ: "\\int_0^1 \\sqrt[3]{1-x^2} \\,dx + \\int_0^1 \\sqrt{1-x^3} \\,dx", latexA: "1", note: "逆関数との面積の関係を利用します" }
+const masterData= [
+  // ==========================================
+  // レベル1: 教科書レベル（積分の基本演算）
+  // ==========================================
+  {
+    id: "L1_01",
+    level: "1_教科書レベル",
+    key: "基本公式：xのn乗の積分 (n≠-1)",
+    latexQ: "\\int x^n \\,dx",
+    latexA: "\\frac{1}{n+1}x^{n+1} + C",
+    note: "公式： $\\int x^n dx = \\frac{x^{n+1}}{n+1} + C$<br>$\\implies$ 微分して $x^n$ になる関数を逆算します"
+  },
+  {
+    id: "L1_02",
+    level: "1_教科書レベル",
+    key: "基本公式：1/x の積分 (対数積分)",
+    latexQ: "\\int \\frac{1}{x} \\,dx",
+    latexA: "\\log |x| + C",
+    note: "公式： $\\int \\frac{1}{x} dx = \\log |x| + C$<br>$\\implies$ 真数条件のため絶対値をつけるのが鉄則です"
+  },
+  {
+    id: "L1_03",
+    level: "1_教科書レベル",
+    key: "指数関数：自然対数の底 e の積分",
+    latexQ: "\\int e^x \\,dx",
+    latexA: "e^x + C",
+    note: "公式： $\\int e^x dx = e^x + C$<br>$\\implies$ $e^x$ は微分しても積分しても形が変わりません"
+  },
+  {
+    id: "L1_04",
+    level: "1_教科書レベル",
+    key: "指数関数：底が e 以外の積分",
+    latexQ: "\\int a^x \\,dx \\quad (a > 0, a \\neq 1)",
+    latexA: "\\frac{a^x}{\\log a} + C",
+    note: "公式： $\\int a^x dx = \\frac{a^x}{\\log a} + C$<br>$\\implies$ $(a^x)' = a^x \\log a$ なので $\\log a$ で割って調整します"
+  },
+  {
+    id: "L1_05",
+    level: "1_教科書レベル",
+    key: "三角関数：sin x の積分",
+    latexQ: "\\int \\sin x \\,dx",
+    latexA: "-\\cos x + C",
+    note: "公式： $\\int \\sin x dx = -\\cos x + C$<br>$\\implies$ $(\\cos x)' = -\\sin x$ より符号が反転することに注意します"
+  },
+  {
+    id: "L1_06",
+    level: "1_教科書レベル",
+    key: "三角関数：cos x の積分",
+    latexQ: "\\int \\cos x \\,dx",
+    latexA: "\\sin x + C",
+    note: "公式： $\\int \\cos x dx = \\sin x + C$<br>$\\implies$ $(\\sin x)' = \\cos x$ の逆演算です"
+  },
+  {
+    id: "L1_07",
+    level: "1_教科書レベル",
+    key: "置換積分：1次式の累乗の積分",
+    latexQ: "\\int (ax+b)^n \\,dx \\quad (n \\neq -1)",
+    latexA: "\\frac{1}{a(n+1)}(ax+b)^{n+1} + C",
+    note: "$\\int f(ax+b)dx = \\frac{1}{a}F(ax+b) + C$<br>$\\implies$ 合成関数の微分の逆で、係数 $a$ で割ります"
+  },
+
+  // ==========================================
+  // レベル2: 難関大入試基礎レベル（必須公式・定石）
+  // ==========================================
+  {
+    id: "L2_01",
+    level: "2_難関大入試基礎レベル",
+    key: "面積公式：放物線と直線の交点 (1/6公式)",
+    latexQ: "\\int_\\alpha^\\beta (x-\\alpha)(x-\\beta) \\,dx",
+    latexA: "-\\frac{1}{6}(\\beta-\\alpha)^3",
+    note: "$\\int_\\alpha^\\beta (x-\\alpha)(x-\\beta) dx = -\\frac{(\\beta-\\alpha)^3}{6}$<br>$\\implies$ 放物線と直線が囲む面積を瞬時に出す必須公式です"
+  },
+  {
+    id: "L2_02",
+    level: "2_難関大入試基礎レベル",
+    key: "面積公式：3次関数と接線 (1/12公式)",
+    latexQ: "\\int_\\alpha^\\beta (x-\\alpha)(x-\\beta)^2 \\,dx",
+    latexA: "\\frac{1}{12}(\\beta-\\alpha)^4",
+    note: "中身を $(x-\\beta)+(\\beta-\\alpha)$ に分割して展開します<br>$\\implies \\frac{(\\beta-\\alpha)^4}{3} - \\frac{(\\beta-\\alpha)^4}{4} = \\frac{(\\beta-\\alpha)^4}{12}$"
+  },
+  {
+    id: "L2_03",
+    level: "2_難関大入試基礎レベル",
+    key: "面積公式：放物線と接線 (1/3公式)",
+    latexQ: "\\int_\\alpha^\\beta (x-\\alpha)^2 \\,dx",
+    latexA: "\\frac{1}{3}(\\beta-\\alpha)^3",
+    note: "$x-\\alpha = t$ と置換するか、そのまま積分します<br>$\\implies [\\frac{1}{3}(x-\\alpha)^3]_\\alpha^\\beta = \\frac{1}{3}(\\beta-\\alpha)^3$"
+  },
+  {
+    id: "L2_04",
+    level: "2_難関大入試基礎レベル",
+    key: "定積分の基本：絶対値を含む関数",
+    latexQ: "\\int_0^2 |x^2-x| \\,dx",
+    latexA: "1",
+    note: "$x^2-x=0$ となる $x=1$ で符号が変わります<br>$\\implies \\int_0^1 -(x^2-x)dx + \\int_1^2 (x^2-x)dx = 1$"
+  },
+  {
+    id: "L2_05",
+    level: "2_難関大入試基礎レベル",
+    key: "対称性：奇関数の定積分",
+    latexQ: "\\int_{-a}^{a} f(x) \\,dx \\quad (f(-x)=-f(x))",
+    latexA: "0",
+    note: "奇関数（原点対称）は区間 $[-a, a]$ で相殺されます<br>$\\implies \\int_{-a}^0 f(x) dx + \\int_0^a f(x) dx = 0$"
+  },
+  {
+    id: "L2_06",
+    level: "2_難関大入試基礎レベル",
+    key: "対称性：偶関数の定積分",
+    latexQ: "\\int_{-a}^{a} f(x) \\,dx \\quad (f(-x)=f(x))",
+    latexA: "2\\int_{0}^{a} f(x) \\,dx",
+    note: "偶関数（y軸対称）は左右の面積が等しくなります<br>$\\implies 2 \\times \\int_0^a f(x) dx$ として計算を簡略化します"
+  },
+  {
+    id: "L2_07",
+    level: "2_難関大入試基礎レベル",
+    key: "図形的直観：三角関数の周期性",
+    latexQ: "\\int_0^{2\\pi} \\sin(nx) \\,dx",
+    latexA: "0",
+    note: "サインカーブの1周期分の定積分です<br>$\\implies$ $x$軸の上下で面積が完全に相殺されるため0になります"
+  },
+  {
+    id: "L2_08",
+    level: "2_難関大入試基礎レベル",
+    key: "図形的直観：サインカーブの半波長",
+    latexQ: "\\int_0^\\pi \\sin x \\,dx",
+    latexA: "2",
+    note: "サインカーブの「ひと山」の面積です<br>$\\implies [-\\cos x]_0^\\pi = -(-1) - (-1) = 2$"
+  },
+  {
+    id: "L2_09",
+    level: "2_難関大入試基礎レベル",
+    key: "図形的処理：四分円の面積",
+    latexQ: "\\int_0^1 \\sqrt{1-x^2} \\,dx",
+    latexA: "\\frac{\\pi}{4}",
+    note: "$y = \\sqrt{1-x^2}$ は半径1の円の上半分です<br>$\\implies$ 区間 $[0, 1]$ は四半円の面積なので $\\frac{1}{4} \\cdot \\pi \\cdot 1^2$"
+  },
+  {
+    id: "L2_10",
+    level: "2_難関大入試基礎レベル",
+    key: "特殊置換：1/(1+x^2) の定積分",
+    latexQ: "\\int_0^1 \\frac{1}{1+x^2} \\,dx",
+    latexA: "\\frac{\\pi}{4}",
+    note: "$x = \\tan\\theta$ と置換する典型問題です<br>$\\implies \\int_0^{\\pi/4} \\frac{1}{1+\\tan^2\\theta} \\cdot \\frac{1}{\\cos^2\\theta} d\\theta = \\int_0^{\\pi/4} 1 d\\theta$"
+  },
+  {
+    id: "L2_11",
+    level: "2_難関大入試基礎レベル",
+    key: "漸化式：ウォリス積分の基本 (3乗)",
+    latexQ: "\\int_0^{\\frac{\\pi}{2}} \\sin^3 x \\,dx",
+    latexA: "\\frac{2}{3}",
+    note: "奇数乗のウォリス積分公式を適用します<br>$\\implies \\frac{2}{3} \\cdot 1 = \\frac{2}{3}$ （$\\cos$ でも同値です）"
+  },
+  {
+    id: "L2_12",
+    level: "2_難関大入試基礎レベル",
+    key: "万能の対称性：King Property",
+    latexQ: "\\int_0^{\\frac{\\pi}{2}} \\frac{\\sin x}{\\sin x + \\cos x} \\,dx",
+    latexA: "\\frac{\\pi}{4}",
+    note: "$x = \\frac{\\pi}{2}-t \\implies I = \\int_0^{\\pi/2} \\frac{\\cos t}{\\cos t + \\sin t} dt$<br>$\\implies 2I = \\int_0^{\\pi/2} 1 dx = \\frac{\\pi}{2}$"
+  },
+  {
+    id: "L2_13",
+    level: "2_難関大入試基礎レベル",
+    key: "広義積分：ガンマ関数の基礎",
+    latexQ: "\\int_0^\\infty e^{-x} \\,dx",
+    latexA: "1",
+    note: "上限 $t \\to \\infty$ の極限を計算します<br>$\\implies \\lim_{t \\to \\infty} [-e^{-x}]_0^t = \\lim_{t \\to \\infty} (-e^{-t} + 1) = 1$"
+  },
+  {
+    id: "L2_14",
+    level: "2_難関大入試基礎レベル",
+    key: "部分積分：多項式と指数関数",
+    latexQ: "\\int x e^x \\,dx",
+    latexA: "(x-1)e^x + C",
+    note: "$x$ を微分側、$e^x$ を積分側に設定して部分積分します<br>$\\implies x e^x - \\int 1 \\cdot e^x dx = (x-1)e^x$"
+  },
+  {
+    id: "L2_15",
+    level: "2_難関大入試基礎レベル",
+    key: "部分積分：対数関数の積分",
+    latexQ: "\\int \\log x \\,dx",
+    latexA: "x \\log x - x + C",
+    note: "$1 \\times \\log x$ と見て部分積分を実行します<br>$\\implies x \\log x - \\int x \\cdot \\frac{1}{x} dx = x \\log x - x$"
+  },
+
+  // ==========================================
+  // レベル3: 国公立大学標準レベル
+  // ==========================================
+  {
+    id: "L3_01",
+    level: "3_国公立大学標準レベル",
+    key: "有理関数の積分：部分分数分解 (1/(x^2-1))",
+    latexQ: "\\int \\frac{1}{x^2-1} \\,dx",
+    latexA: "\\frac{1}{2} \\log \\left| \\frac{x-1}{x+1} \\right| + C",
+    note: "$\\frac{1}{x^2-1} = \\frac{1}{2}(\\frac{1}{x-1} - \\frac{1}{x+1})$ へ分解<br>$\\implies \\frac{1}{2} \\int (\\frac{1}{x-1} - \\frac{1}{x+1}) dx = \\frac{1}{2} (\\log|x-1| - \\log|x+1|)$"
+  },
+  {
+    id: "L3_02",
+    level: "3_国公立大学標準レベル",
+    key: "対数積分：分子が分母の微分型 (f'(x)/f(x))",
+    latexQ: "\\int \\frac{x}{x^2+1} \\,dx",
+    latexA: "\\frac{1}{2} \\log (x^2+1) + C",
+    note: "分子を分母の微分 $(x^2+1)' = 2x$ に合わせる<br>$\\implies \\frac{1}{2} \\int \\frac{(x^2+1)'}{x^2+1} dx = \\frac{1}{2} \\log(x^2+1)$"
+  },
+  {
+    id: "L3_03",
+    level: "3_国公立大学標準レベル",
+    key: "次数下げ：三角関数の2乗 (半角の公式)",
+    latexQ: "\\int \\sin^2 x \\,dx",
+    latexA: "\\frac{x}{2} - \\frac{\\sin 2x}{4} + C",
+    note: "半角の公式： $\\sin^2 x = \\frac{1-\\cos 2x}{2}$ を利用<br>$\\implies \\int (\\frac{1}{2} - \\frac{\\cos 2x}{2}) dx = \\frac{1}{2}x - \\frac{1}{4}\\sin 2x$"
+  },
+  {
+    id: "L3_04",
+    level: "3_国公立大学標準レベル",
+    key: "三角関数の積：角度の異なる積 (積和の公式)",
+    latexQ: "\\int \\sin 3x \\cos x \\,dx",
+    latexA: "-\\frac{\\cos 4x}{8} - \\frac{\\cos 2x}{4} + C",
+    note: "積和の公式： $\\sin\\alpha \\cos\\beta = \\frac{1}{2}(\\sin(\\alpha+\\beta) + \\sin(\\alpha-\\beta))$<br>$\\implies \\frac{1}{2} \\int (\\sin 4x + \\sin 2x) dx$"
+  },
+  {
+    id: "L3_05",
+    level: "3_国公立大学標準レベル",
+    key: "置換積分：無理関数を含む定積分",
+    latexQ: "\\int_0^1 x\\sqrt{1-x} \\,dx",
+    latexA: "\\frac{4}{15}",
+    note: "$1-x = t$ とおく $\\implies x = 1-t, dx = -dt$<br>$\\implies \\int_1^0 (1-t)\\sqrt{t} (-dt) = \\int_0^1 (t^{1/2} - t^{3/2}) dt$"
+  },
+  {
+    id: "L3_06",
+    level: "3_国公立大学標準レベル",
+    key: "部分積分：多項式(2次)と指数関数の積",
+    latexQ: "\\int x^2 e^x \\,dx",
+    latexA: "(x^2 - 2x + 2)e^x + C",
+    note: "$x^2 e^x - \\int 2x e^x dx$ と1回目の部分積分<br>$\\implies x^2 e^x - 2((x-1)e^x)$ と2回目を実行して整理"
+  },
+  {
+    id: "L3_07",
+    level: "3_国公立大学標準レベル",
+    key: "無理関数の積分：分母の有理化",
+    latexQ: "\\int \\frac{1}{\\sqrt{x+1}+\\sqrt{x}} \\,dx",
+    latexA: "\\frac{2}{3}(x+1)^{\\frac{3}{2}} - \\frac{2}{3}x^{\\frac{3}{2}} + C",
+    note: "分母分子に $(\\sqrt{x+1}-\\sqrt{x})$ を掛ける<br>$\\implies \\int \\frac{\\sqrt{x+1}-\\sqrt{x}}{(x+1)-x} dx = \\int (x+1)^{1/2} - x^{1/2} dx$"
+  },
+  {
+    id: "L3_08",
+    level: "3_国公立大学標準レベル",
+    key: "三角関数の積分：奇数乗の処理 (1個分離)",
+    latexQ: "\\int \\cos^3 x \\,dx",
+    latexA: "\\sin x - \\frac{\\sin^3 x}{3} + C",
+    note: "$\\cos^3 x = \\cos x(1-\\sin^2 x)$ と変形<br>$\\implies \\sin x = t$ とおき $\\int (1-t^2) dt$ を計算"
+  },
+  {
+    id: "L3_09",
+    level: "3_国公立大学標準レベル",
+    key: "部分積分：同形出現 (ループ型)",
+    latexQ: "\\int e^x \\sin x \\,dx",
+    latexA: "\\frac{1}{2} e^x (\\sin x - \\cos x) + C",
+    note: "$I = e^x \\sin x - \\int e^x \\cos x dx$<br>$\\implies I = e^x \\sin x - (e^x \\cos x + I) \\implies 2I = e^x(\\sin x - \\cos x)$"
+  },
+  {
+    id: "L3_10",
+    level: "3_国公立大学標準レベル",
+    key: "置換積分：対数関数の微分接触型",
+    latexQ: "\\int \\frac{\\log x}{x} \\,dx",
+    latexA: "\\frac{1}{2} (\\log x)^2 + C",
+    note: "$\\int (\\log x) \\cdot (\\log x)' dx$ と見る<br>$\\implies \\log x = t$ とおくと $\\int t dt = \\frac{1}{2}t^2 + C$"
+  },
+  {
+    id: "L3_11",
+    level: "3_国公立大学標準レベル",
+    key: "三角関数の積分：tan x の対数積分",
+    latexQ: "\\int \\tan x \\,dx",
+    latexA: "-\\log |\\cos x| + C",
+    note: "$\\int \\frac{\\sin x}{\\cos x} dx = - \\int \\frac{(\\cos x)'}{\\cos x} dx$ と変形<br>$\\implies -\\log |\\cos x| + C$"
+  },
+  {
+    id: "L3_12",
+    level: "3_国公立大学標準レベル",
+    key: "積分方程式：定数項を k と置く解法",
+    latexQ: "f(x) = x + \\int_0^{1/2} f(t) \\,dt",
+    latexA: "f(x) = x + \\frac{1}{4}",
+    note: "$\\int_0^{1/2} f(t)dt = k$ とおくと $f(x)=x+k$<br>$\\implies k = \\int_0^{1/2} (t+k)dt = [\\frac{1}{2}t^2+kt]_0^{1/2} = \\frac{1}{8} + \\frac{1}{2}k \\implies k=\\frac{1}{4}$"
+  },
+  {
+    id: "L3_13",
+    level: "3_国公立大学標準レベル",
+    key: "微積分学の基本定理：積分記号下の変数 x の微分",
+    latexQ: "\\frac{d}{dx} \\int_a^x f(t) \\,dt",
+    latexA: "f(x)",
+    note: "$\\int_a^x f(t) dt = [F(t)]_a^x = F(x) - F(a)$<br>$\\implies \\frac{d}{dx}(F(x) - F(a)) = F'(x) = f(x)$"
+  },
+  // ==========================================
+  // レベル4_難関大標準レベル
+  // ==========================================
+
+ {
+    id: "L4_01",
+    level: "4_難関大標準レベル",
+    key: "指数関数と微分の和：e^x{f(x)+f'(x)} 型",
+    latexQ: "\\int e^x (\\sin x + \\cos x) \\,dx",
+    latexA: "e^x \\sin x + C",
+    note: "積の微分の逆： $(e^x f(x))' = e^x f(x) + e^x f'(x)$ を利用<br>$\\implies \\int e^x (\\sin x + (\\sin x)') dx = e^x \\sin x$"
+  },
+  {
+    id: "L4_02",
+    level: "4_難関大標準レベル",
+    key: "特殊置換：1/√(x^2+A) の積分",
+    latexQ: "\\int \\frac{1}{\\sqrt{x^2+A}} \\,dx",
+    latexA: "\\log |x + \\sqrt{x^2+A}| + C",
+    note: "$t = x + \\sqrt{x^2+A}$ と置く超有名置換<br>$\\implies dt = (1 + \\frac{x}{\\sqrt{x^2+A}})dx = \\frac{t}{\\sqrt{x^2+A}}dx \\implies \\int \\frac{1}{t} dt$"
+  },
+  {
+    id: "L4_03",
+    level: "4_難関大標準レベル",
+    key: "三角関数の有理式：1/cos x の積分 (部分分数分解)",
+    latexQ: "\\int \\frac{1}{\\cos x} \\,dx",
+    latexA: "\\frac{1}{2} \\log \\left| \\frac{1+\\sin x}{1-\\sin x} \\right| + C",
+    note: "分母分子に $\\cos x$ を掛けて $\\sin x = t$ 置換<br>$\\implies \\int \\frac{1}{1-t^2} dt = \\frac{1}{2} \\int (\\frac{1}{1-t} + \\frac{1}{1+t}) dt$"
+  },
+  {
+    id: "L4_04",
+    level: "4_難関大標準レベル",
+    key: "対称性の利用：x f(sin x) 型 (King Property)",
+    latexQ: "\\int_0^\\pi x \\sin x \\,dx",
+    latexA: "\\pi",
+    note: "$x = \\pi-t$ 置換により $I = \\int_0^\\pi (\\pi-t)\\sin t dt$<br>$\\implies 2I = \\pi \\int_0^\\pi \\sin x dx = \\pi [- \\cos x]_0^\\pi = 2\\pi$"
+  },
+  {
+    id: "L4_05",
+    level: "4_難関大標準レベル",
+    key: "指数関数の分数積分：分子に微分を作る変形",
+    latexQ: "\\int \\frac{1}{1+e^x} \\,dx",
+    latexA: "x - \\log (1+e^x) + C",
+    note: "分子を $(1+e^x) - e^x$ と変形する<br>$\\implies \\int (1 - \\frac{e^x}{1+e^x}) dx = x - \\log(1+e^x)$"
+  },
+  {
+    id: "L4_06",
+    level: "4_難関大標準レベル",
+    key: "図形的処理：半径 a の円の面積 (置換積分法)",
+    latexQ: "\\int_0^a \\sqrt{a^2-x^2} \\,dx",
+    latexA: "\\frac{\\pi a^2}{4}",
+    note: "$x = a \\sin \\theta$ と置換 $\\implies dx = a \\cos \\theta d\\theta$<br>$\\implies \\int_0^{\\pi/2} a^2 \\cos^2 \\theta d\\theta = a^2 \\int_0^{\\pi/2} \\frac{1+\\cos 2\\theta}{2} d\\theta$"
+  },
+  {
+    id: "L4_07",
+    level: "4_難関大標準レベル",
+    key: "部分積分と特殊積分：log(x^2+1) の積分",
+    latexQ: "\\int \\log(x^2+1) \\,dx",
+    latexA: "x \\log(x^2+1) - 2x + 2\\arctan x + C",
+    note: "$1 \\times \\log(\\dots)$ と見て部分積分 $\\implies x\\log(x^2+1) - \\int \\frac{2x^2}{x^2+1} dx$<br>$\\implies \\int \\frac{2x^2}{x^2+1} dx = \\int (2 - \\frac{2}{x^2+1}) dx$ と分離"
+  },
+  {
+    id: "L4_11",
+    level: "4_難関大標準レベル",
+    key: "積分の漸化式：tanのn乗の隣接項関係",
+    latexQ: "I_n = \\int_0^{\\frac{\\pi}{4}} \\tan^n x \\,dx \\text{ に対する } I_n + I_{n-2}",
+    latexA: "\\frac{1}{n-1}",
+    note: "$\\tan^n x + \\tan^{n-2} x = \\tan^{n-2} x (\\tan^2 x + 1)$<br>$\\implies \\int_0^{\\pi/4} \\tan^{n-2} x \\cdot \\frac{1}{\\cos^2 x} dx = [\\frac{\\tan^{n-1} x}{n-1}]_0^{\\pi/4}$"
+  },
+  {
+    id: "L4_12",
+    level: "4_難関大標準レベル",
+    key: "和の極限：区分求積法による定積分への変換",
+    latexQ: "\\lim_{n \\to \\infty} \\frac{1}{n} \\sum_{k=1}^n \\sin \\left( \\frac{k\\pi}{n} \\right)",
+    latexA: "\\frac{2}{\\pi}",
+    note: "$\\int_0^1 \\sin(\\pi x) dx$ へ変換 $\\implies [-\\frac{1}{\\pi}\\cos(\\pi x)]_0^1$<br>$= -\\frac{1}{\\pi}(-1 - 1) = \\frac{2}{\\pi}$"
+  },
+  {
+    id: "L4_13",
+    level: "4_難関大標準レベル",
+    key: "定積分の不等式評価：グラフの上下関係の利用",
+    latexQ: "0 \\le x \\le 1 \\text{ における } \\int_0^1 e^{-x^2} \\,dx \\text{ の下限}",
+    latexA: "1 - \\frac{1}{e}",
+    note: "$0 \\le x \\le 1$ で $x^2 \\le x$ より $e^{-x^2} \\ge e^{-x}$<br>$\\implies \\int_0^1 e^{-x^2} dx \\ge \\int_0^1 e^{-x} dx = [-e^{-x}]_0^1 = 1 - 1/e$"
+  },
+  // ==========================================
+  // レベル5_超絶技巧レベル
+  // ==========================================
+
+  {
+    id: "L5_01",
+    level: "5_超絶技巧レベル",
+    key: "1998年東大後期：King Property と加法定理の融合",
+    latexQ: "\\int_0^{\\frac{\\pi}{4}} \\log(1+\\tan x) \\,dx",
+    latexA: "\\frac{\\pi}{8} \\log 2",
+    note: "$x = \\frac{\\pi}{4}-t$ と置く $\\implies 1+\\tan(\\frac{\\pi}{4}-t) = 1+\\frac{1-\\tan t}{1+\\tan t} = \\frac{2}{1+\\tan t}$<br>$\\implies I = \\int_0^{\\pi/4} (\\log 2 - \\log(1+\\tan t)) dt = \\frac{\\pi}{4}\\log 2 - I$"
+  },
+  {
+    id: "L5_02",
+    level: "5_超絶技巧レベル",
+    key: "対称性の極致：King Property による分母分子の相殺",
+    latexQ: "\\int_0^{\\frac{\\pi}{2}} \\frac{\\sqrt{\\sin x}}{\\sqrt{\\sin x}+\\sqrt{\\cos x}} \\,dx",
+    latexA: "\\frac{\\pi}{4}",
+    note: "$x = \\frac{\\pi}{2}-t$ 置換で分子が $\\sqrt{\\cos t}$ に変化<br>$\\implies 2I = \\int_0^{\\pi/2} \\frac{\\sqrt{\\sin x}+\\sqrt{\\cos x}}{\\sqrt{\\sin x}+\\sqrt{\\cos x}} dx = [x]_0^{\\pi/2} = \\frac{\\pi}{2}$"
+  },
+  {
+    id: "L5_03",
+    level: "5_超絶技巧レベル",
+    key: "歴史的難問：オイラーの対数正弦積分",
+    latexQ: "\\int_0^{\\frac{\\pi}{2}} \\log(\\sin x) \\,dx",
+    latexA: "-\\frac{\\pi}{2} \\log 2",
+    note: "$2I = \\int_0^{\\pi/2} \\log(\\sin x \\cos x) dx = \\int_0^{\\pi/2} \\log(\\frac{\\sin 2x}{2}) dx$<br>$\\implies 2I = \\frac{1}{2}\\int_0^\\pi \\log(\\sin u) du - \\frac{\\pi}{2}\\log 2 = I - \\frac{\\pi}{2}\\log 2$"
+  },
+  {
+    id: "L5_04",
+    level: "5_超絶技巧レベル",
+    key: "ファインマンの積分技法：積分順序の交換 (Fubini)",
+    latexQ: "\\int_0^1 \\frac{x^b - x^a}{\\log x} \\,dx",
+    latexA: "\\log\\left(\\frac{b+1}{a+1}\\right)",
+    note: "$\\frac{x^b-x^a}{\\log x} = \\int_a^b x^y dy$ と見て重積分へ変換<br>$\\implies \\int_a^b (\\int_0^1 x^y dx) dy = \\int_a^b \\frac{1}{y+1} dy = [\\log(y+1)]_a^b$"
+  },
+  {
+    id: "L5_05",
+    level: "5_超絶技巧レベル",
+    key: "万能置換：ワイエルシュトラス置換 (tan(x/2))",
+    latexQ: "\\int \\frac{1}{2 + \\cos x} \\,dx",
+    latexA: "\\frac{2}{\\sqrt{3}} \\arctan\\left(\\frac{\\tan(x/2)}{\\sqrt{3}}\\right) + C",
+    note: "$t = \\tan(x/2)$ 置換 $\\implies \\cos x = \\frac{1-t^2}{1+t^2}, dx = \\frac{2dt}{1+t^2}$<br>$\\implies \\int \\frac{2}{t^2+3} dt = \\frac{2}{\\sqrt{3}} \\arctan(\\frac{t}{\\sqrt{3}})$"
+  },
+  {
+    id: "L5_07",
+    level: "5_超絶技巧レベル",
+    key: "広義積分の究極：ディリクレ積分 (Sinc関数)",
+    latexQ: "\\int_0^{\\infty} \\frac{\\sin x}{x} \\,dx",
+    latexA: "\\frac{\\pi}{2}",
+    note: "$\\frac{1}{x} = \\int_0^\\infty e^{-xy} dy$ を用いた二重積分<br>$\\implies \\int_0^\\infty (\\int_0^\\infty e^{-xy} \\sin x dx) dy = \\int_0^\\infty \\frac{1}{1+y^2} dy = [\\arctan y]_0^\\infty$"
+  },
+  {
+    id: "L5_08",
+    level: "5_超絶技巧レベル",
+    key: "パラメータ微分法：ポアソンの積分",
+    latexQ: "\\int_0^{\\pi} \\log(1-2a\\cos x + a^2) \\,dx \\quad (|a| < 1)",
+    latexA: "0",
+    note: "$I(a)$ とおき $a$ で微分 $\\implies I'(a) = \\int_0^\\pi \\frac{-2\\cos x + 2a}{1-2a\\cos x + a^2} dx = 0$<br>$\\implies I(0) = 0$ より、すべての $|a|<1$ で $I(a)=0$"
+  },
+  {
+    id: "L5_10",
+    level: "5_超絶技巧レベル",
+    key: "解析学の基本：デルタ関数的挙動と極限評価",
+    latexQ: "\\lim_{n \\to \\infty} \\int_0^1 nx^n f(x) \\,dx",
+    latexA: "f(1)",
+    note: "部分積分： $[\\frac{n}{n+1}x^{n+1}f(x)]_0^1 - \\int_0^1 \\frac{n}{n+1}x^{n+1}f'(x)dx$<br>$\\implies \\frac{n}{n+1}f(1) - (\\text{積分項} \\to 0) = f(1)$"
+  },
+  {
+    id: "L5_11",
+    level: "5_超絶技巧レベル",
+    key: "図形的発想の勝利：関数と逆関数の和",
+    latexQ: "\\int_0^1 \\sqrt[3]{1-x^2} \\,dx + \\int_0^1 \\sqrt{1-x^3} \\,dx",
+    latexA: "1",
+    note: "$y = \\sqrt[3]{1-x^2}$ と $x = \\sqrt[3]{1-y^2}$ は互いに逆関数<br>$\\implies$ $1 \\times 1$ の正方形の面積を補完し合うため、合計は1となる"
+  }
 ];
+
 
 let topSel=null, midSel=null, botSel=null;
 let lock=false, modalOpen=false;
@@ -440,8 +855,31 @@ function checkMatch() {
         setTimeout(() => {
             let isMatch = (topSel.d.id === midSel.d.id) && (midSel.d.id === botSel.d.id);
             let dTarget = topSel.d;
-            let modalBody = `<div style="font-size:1.1em; margin:10px 0; padding:10px; border:2px solid #2196F3; border-radius:8px; text-align:center;">\\( \\displaystyle ${dTarget.latexQ} = ${dTarget.latexA} \\)</div><div style="font-size:0.95em; text-align:left; background:#f4f4f4; padding:15px; border-radius:6px; line-height:1.6;"><strong style="color:#0D47A1;">【方針】 ${dTarget.key}</strong><hr style="margin:8px 0; border:none; border-top:1px dashed #ccc;">${dTarget.note}</div>`;
-
+            let modalBody =
+                `
+                <div class="formula-box">
+                    \\( \\displaystyle ${dTarget.latexQ} = ${dTarget.latexA} \\)
+                </div>
+                
+                <div style="
+                    font-size:0.95em;
+                    text-align:left;
+                    background:#f4f4f4;
+                    padding:15px;
+                    border-radius:6px;
+                    line-height:1.6;
+                ">
+                    <strong style="color:#0D47A1;">【方針】 ${dTarget.key}</strong>
+                
+                    <hr style="
+                        margin:8px 0;
+                        border:none;
+                        border-top:1px dashed #ccc;
+                    ">
+                
+                    ${dTarget.note}
+                </div>
+                `;
             if(isMatch) {
                 show('正解！', modalBody, () => {
                     topSel.c.classList.add('matched'); midSel.c.classList.add('matched'); botSel.c.classList.add('matched');
