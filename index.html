@@ -302,9 +302,9 @@ const masterData = [
     latexQ: "\\int x^n \\,dx",
     latexA: "\\frac{1}{n+1}x^{n+1} + C",
     note:
-    "【着眼点】：xの基本累乗\n" +
-    "【公式/方針】：\\int x^n dx = \\frac{x^{n+1}}{n+1} + C\n" +
-    "【危険】：n=-1の除外\n" +
+    "【着眼点】：xの基本累乗<br>" +
+    "【公式/方針】：\\int x^n dx = \\frac{x^{n+1}}{n+1} + C<br>" +
+    "【危険】：n=-1の除外<br>" +
     "⇒ 微分して x^n になる関数を逆算する基本公式。"
   },
   {
@@ -314,9 +314,9 @@ const masterData = [
     latexQ: "\\int \\frac{1}{x} \\,dx",
     latexA: "\\log |x| + C",
     note:
-    "【着眼点】：分母が1次式単体\n" +
-    "【公式/方針】：\\int \\frac{1}{x} dx = \\log|x| + C\n" +
-    "【危険】：絶対値\n" +
+    "【着眼点】：分母が1次式単体<br>" +
+    "【公式/方針】：\\int \\frac{1}{x} dx = \\log|x| + C<br>" +
+    "【危険】：絶対値<br>" +
     "⇒ 真数条件のため絶対値をつけるのが鉄則。"
   },
   {
@@ -326,21 +326,21 @@ const masterData = [
     latexQ: "\\int e^x \\,dx",
     latexA: "e^x + C",
     note:
-    "【着眼点】：自然対数の底eの指数関数\n" +
-    "【公式/方針】：そのまま e^x + C\n" +
-    "【危険】：積分定数C\n" +
+    "【着眼点】：自然対数の底eの指数関数<br>" +
+    "【公式/方針】：そのまま e^x + C<br>" +
+    "【危険】：積分定数C<br>" +
     "⇒ (e^x)' = e^x より、微分しても積分しても形が変わらない。"
   },
   {
     id: "L1_04",
     level: "1_教科書レベル",
     key: "基本公式：a^xの積分",
-    latexQ: "\\int a^x \\,dx \\quad (a > 0, a \\neq 1)",
+    latexQ: "\\int a^x \\,dx \\quad (a > 0, a \<br>eq 1)",
     latexA: "\\frac{a^x}{\\log a} + C",
     note:
-    "【着眼点】：底がe以外の指数関数\n" +
-    "【公式/方針】：\\log a で割る\n" +
-    "【危険】：\\log a の掛け算ミス\n" +
+    "【着眼点】：底がe以外の指数関数<br>" +
+    "【公式/方針】：\\log a で割る<br>" +
+    "【危険】：\\log a の掛け算ミス<br>" +
     "⇒ (a^x)' = a^x \\log a なので、逆算として \\log a で割って調整する。"
   },
   {
@@ -350,9 +350,9 @@ const masterData = [
     latexQ: "\\int \\sin x \\,dx",
     latexA: "-\\cos x + C",
     note:
-    "【着眼点】：sinの単体積分\n" +
-    "【公式/方針】：-\\cos x + C\n" +
-    "【危険】：符号\n" +
+    "【着眼点】：sinの単体積分<br>" +
+    "【公式/方針】：-\\cos x + C<br>" +
+    "【危険】：符号<br>" +
     "⇒ (\\cos x)' = -\\sin x より、積分ではマイナスがつくことに注意。"
   },
   {
@@ -362,21 +362,21 @@ const masterData = [
     latexQ: "\\int \\cos x \\,dx",
     latexA: "\\sin x + C",
     note:
-    "【着眼点】：cosの単体積分\n" +
-    "【公式/方針】：\\sin x + C\n" +
-    "【危険】：符号\n" +
+    "【着眼点】：cosの単体積分<br>" +
+    "【公式/方針】：\\sin x + C<br>" +
+    "【危険】：符号<br>" +
     "⇒ (\\sin x)' = \\cos x の完全な逆演算。"
   },
   {
     id: "L1_07",
     level: "1_教科書レベル",
     key: "置換積分：1次式の累乗型",
-    latexQ: "\\int (ax+b)^n \\,dx \\quad (n \\neq -1)",
+    latexQ: "\\int (ax+b)^n \\,dx \\quad (n \<br>eq -1)",
     latexA: "\\frac{1}{a(n+1)}(ax+b)^{n+1} + C",
     note:
-    "【着眼点】：中身が1次式の累乗\n" +
-    "【公式/方針】：xの係数 a で割る\n" +
-    "【危険】：係数aの割り忘れ\n" +
+    "【着眼点】：中身が1次式の累乗<br>" +
+    "【公式/方針】：xの係数 a で割る<br>" +
+    "【危険】：係数aの割り忘れ<br>" +
     "⇒ ax+b = t と置換する基本形。合成関数の微分の逆演算として 1/a が前に出る。"
   },
 
@@ -390,10 +390,10 @@ const masterData = [
     latexQ: "\\int_\\alpha^\\beta (x-\\alpha)(x-\\beta) \\,dx",
     latexA: "-\\frac{1}{6}(\\beta-\\alpha)^3",
     note:
-    "【着眼点】：積分区間が被積分関数(=0)の解\n" +
-    "【公式/方針】：1/6公式\n" +
-    "【危険】：先頭のマイナス符号\n" +
-    "⇒ 放物線と直線が囲む面積などを瞬時に出す必須公式。\n" +
+    "【着眼点】：積分区間が被積分関数(=0)の解<br>" +
+    "【公式/方針】：1/6公式<br>" +
+    "【危険】：先頭のマイナス符号<br>" +
+    "⇒ 放物線と直線が囲む面積などを瞬時に出す必須公式。<br>" +
     "\\int_\\alpha^\\beta (x-\\alpha)(x-\\beta) dx = -\\frac{1}{6}(\\beta-\\alpha)^3"
   },
   {
@@ -403,12 +403,12 @@ const masterData = [
     latexQ: "\\int_\\alpha^\\beta (x-\\alpha)(x-\\beta)^2 \\,dx",
     latexA: "\\frac{1}{12}(\\beta-\\alpha)^4",
     note:
-    "【着眼点】：(1次)×(2乗)で区間が各々の零点\n" +
-    "【公式/方針】：x-\\alpha = (x-\\beta) + (\\beta-\\alpha) と変形\n" +
-    "【危険】：分母の数値(12)\n" +
-    "⇒ \\int_\\alpha^\\beta \\{ (x-\\beta)^3 + (\\beta-\\alpha)(x-\\beta)^2 \\} dx\n" +
-    "   = \\left[ \\frac{1}{4}(x-\\beta)^4 + \\frac{\\beta-\\alpha}{3}(x-\\beta)^3 \\right]_\\alpha^\\beta\n" +
-    "   = 0 - \\left( \\frac{1}{4}(\\alpha-\\beta)^4 + \\frac{\\beta-\\alpha}{3}(\\alpha-\\beta)^3 \\right)\n" +
+    "【着眼点】：(1次)×(2乗)で区間が各々の零点<br>" +
+    "【公式/方針】：x-\\alpha = (x-\\beta) + (\\beta-\\alpha) と変形<br>" +
+    "【危険】：分母の数値(12)<br>" +
+    "⇒ \\int_\\alpha^\\beta \\{ (x-\\beta)^3 + (\\beta-\\alpha)(x-\\beta)^2 \\} dx<br>" +
+    "   = \\left[ \\frac{1}{4}(x-\\beta)^4 + \\frac{\\beta-\\alpha}{3}(x-\\beta)^3 \\right]_\\alpha^\\beta<br>" +
+    "   = 0 - \\left( \\frac{1}{4}(\\alpha-\\beta)^4 + \\frac{\\beta-\\alpha}{3}(\\alpha-\\beta)^3 \\right)<br>" +
     "   = -\\frac{1}{4}(\\beta-\\alpha)^4 + \\frac{1}{3}(\\beta-\\alpha)^4 = \\frac{1}{12}(\\beta-\\alpha)^4"
   },
   {
@@ -418,9 +418,9 @@ const masterData = [
     latexQ: "\\int_\\alpha^\\beta (x-\\alpha)^2 \\,dx",
     latexA: "\\frac{1}{3}(\\beta-\\alpha)^3",
     note:
-    "【着眼点】：完全平方式の定積分\n" +
-    "【公式/方針】：(x-\\alpha)の塊のまま積分\n" +
-    "【危険】：展開して計算ミス\n" +
+    "【着眼点】：完全平方式の定積分<br>" +
+    "【公式/方針】：(x-\\alpha)の塊のまま積分<br>" +
+    "【危険】：展開して計算ミス<br>" +
     "⇒ \\int_\\alpha^\\beta (x-\\alpha)^2 dx = \\left[ \\frac{1}{3}(x-\\alpha)^3 \\right]_\\alpha^\\beta = \\frac{1}{3}(\\beta-\\alpha)^3"
   },
   {
@@ -430,12 +430,12 @@ const masterData = [
     latexQ: "\\int_0^2 |x^2-x| \\,dx",
     latexA: "1",
     note:
-    "【着眼点】：絶対値の中身の符号変化\n" +
-    "【公式/方針】：中身=0となる x=1 で区間分割\n" +
-    "【危険】：符号反転忘れ\n" +
-    "⇒ x^2-x = x(x-1) より、0≦x≦1 で負、1≦x≦2 で正。\n" +
-    "与式 = \\int_0^1 -(x^2-x) dx + \\int_1^2 (x^2-x) dx\n" +
-    "     = \\left[ -\\frac{x^3}{3} + \\frac{x^2}{2} \\right]_0^1 + \\left[ \\frac{x^3}{3} - \\frac{x^2}{2} \\right]_1^2\n" +
+    "【着眼点】：絶対値の中身の符号変化<br>" +
+    "【公式/方針】：中身=0となる x=1 で区間分割<br>" +
+    "【危険】：符号反転忘れ<br>" +
+    "⇒ x^2-x = x(x-1) より、0≦x≦1 で負、1≦x≦2 で正。<br>" +
+    "与式 = \\int_0^1 -(x^2-x) dx + \\int_1^2 (x^2-x) dx<br>" +
+    "     = \\left[ -\\frac{x^3}{3} + \\frac{x^2}{2} \\right]_0^1 + \\left[ \\frac{x^3}{3} - \\frac{x^2}{2} \\right]_1^2<br>" +
     "     = \\frac{1}{6} + \\left( \\frac{2}{3} - \\left( -\\frac{1}{6} \\right) \\right) = 1"
   },
   {
@@ -445,9 +445,9 @@ const masterData = [
     latexQ: "\\int_{-a}^{a} f(x) \\,dx \\quad (f(-x)=-f(x))",
     latexA: "0",
     note:
-    "【着眼点】：対称な積分区間 [-a, a] と奇関数\n" +
-    "【公式/方針】：相殺されて0\n" +
-    "【危険】：偶奇判定ミス\n" +
+    "【着眼点】：対称な積分区間 [-a, a] と奇関数<br>" +
+    "【公式/方針】：相殺されて0<br>" +
+    "【危険】：偶奇判定ミス<br>" +
     "⇒ f(-x) = -f(x) となる奇関数（原点対称）は、x軸の上下で面積が完全に相殺されるため即答で0。"
   },
   {
@@ -457,9 +457,9 @@ const masterData = [
     latexQ: "\\int_{-a}^{a} f(x) \\,dx \\quad (f(-x)=f(x))",
     latexA: "2\\int_{0}^{a} f(x) \\,dx",
     note:
-    "【着眼点】：対称な積分区間 [-a, a] と偶関数\n" +
-    "【公式/方針】：区間を [0, a] にして2倍\n" +
-    "【危険】：先頭の2倍忘れ\n" +
+    "【着眼点】：対称な積分区間 [-a, a] と偶関数<br>" +
+    "【公式/方針】：区間を [0, a] にして2倍<br>" +
+    "【危険】：先頭の2倍忘れ<br>" +
     "⇒ f(-x) = f(x) となる偶関数（y軸対称）は、左右の面積が等しいため計算量を半減させる。"
   },
   {
@@ -469,9 +469,9 @@ const masterData = [
     latexQ: "\\int_0^{2\\pi} \\sin(nx) \\,dx",
     latexA: "0",
     note:
-    "【着眼点】：サインのちょうど1周期分の区間\n" +
-    "【公式/方針】：周期積分は0\n" +
-    "【危険】：nの扱い\n" +
+    "【着眼点】：サインのちょうど1周期分の区間<br>" +
+    "【公式/方針】：周期積分は0<br>" +
+    "【危険】：nの扱い<br>" +
     "⇒ グラフの図形解釈。x軸の上下で面積が完全に相殺されるため計算不要で0。"
   },
   {
@@ -481,10 +481,10 @@ const masterData = [
     latexQ: "\\int_0^\\pi \\sin x \\,dx",
     latexA: "2",
     note:
-    "【着眼点】：サインカーブのひと山分 [0, π]\n" +
-    "【公式/方針】：面積は2\n" +
-    "【危険】：\\cos\\pi=-1 の代入ミス\n" +
-    "⇒ よく出る値として覚えておく。\n" +
+    "【着眼点】：サインカーブのひと山分 [0, π]<br>" +
+    "【公式/方針】：面積は2<br>" +
+    "【危険】：\\cos\\pi=-1 の代入ミス<br>" +
+    "⇒ よく出る値として覚えておく。<br>" +
     "\\left[ -\\cos x \\right]_0^\\pi = -(-1) - (-1) = 2"
   },
   {
@@ -494,9 +494,9 @@ const masterData = [
     latexQ: "\\int_0^1 \\sqrt{1-x^2} \\,dx",
     latexA: "\\frac{\\pi}{4}",
     note:
-    "【着眼点】：y = \\sqrt{1-x^2} は原点中心、半径1の円の上半分の式\n" +
-    "【公式/方針】：円の面積公式を利用\n" +
-    "【危険】：無駄な置換積分\n" +
+    "【着眼点】：y = \\sqrt{1-x^2} は原点中心、半径1の円の上半分の式<br>" +
+    "【公式/方針】：円の面積公式を利用<br>" +
+    "【危険】：無駄な置換積分<br>" +
     "⇒ 区間 [0, 1] は第一象限にある四分円を表すため、1/4 × π ⋅ 1^2 = π/4"
   },
   {
@@ -506,11 +506,11 @@ const masterData = [
     latexQ: "\\int_0^1 \\frac{1}{1+x^2} \\,dx",
     latexA: "\\frac{\\pi}{4}",
     note:
-    "【着眼点】：分母に 1+x^2 の形\n" +
-    "【公式/方針】：x = \\tan\\theta と置換\n" +
-    "【危険】：区間変更\n" +
-    "⇒ dx = \\frac{1}{\\cos^2\\theta} d\\theta、x が 0→1 のとき θ は 0→π/4。\n" +
-    "与式 = \\int_0^{\\pi/4} \\frac{1}{1+\\tan^2\\theta} \\cdot \\frac{1}{\\cos^2\\theta} d\\theta\n" +
+    "【着眼点】：分母に 1+x^2 の形<br>" +
+    "【公式/方針】：x = \\tan\\theta と置換<br>" +
+    "【危険】：区間変更<br>" +
+    "⇒ dx = \\frac{1}{\\cos^2\\theta} d\\theta、x が 0→1 のとき θ は 0→π/4。<br>" +
+    "与式 = \\int_0^{\\pi/4} \\frac{1}{1+\\tan^2\\theta} \\cdot \\frac{1}{\\cos^2\\theta} d\\theta<br>" +
     "     = \\int_0^{\\pi/4} 1 d\\theta = \\frac{\\pi}{4}"
   },
   {
@@ -520,9 +520,9 @@ const masterData = [
     latexQ: "\\int_0^{\\frac{\\pi}{2}} \\sin^3 x \\,dx",
     latexA: "\\frac{2}{3}",
     note:
-    "【着眼点】：区間 [0, π/2] における sin または cos の累乗\n" +
-    "【公式/方針】：ウォリス積分公式\n" +
-    "【危険】：偶数乗・奇数乗の公式混同\n" +
+    "【着眼点】：区間 [0, π/2] における sin または cos の累乗<br>" +
+    "【公式/方針】：ウォリス積分公式<br>" +
+    "【危険】：偶数乗・奇数乗の公式混同<br>" +
     "⇒ 奇数乗(3乗)なので、\\frac{3-1}{3} \\times 1 = \\frac{2}{3}"
   },
   {
@@ -532,12 +532,12 @@ const masterData = [
     latexQ: "\\int_0^{\\frac{\\pi}{2}} \\frac{\\sin x}{\\sin x + \\cos x} \\,dx",
     latexA: "\\frac{\\pi}{4}",
     note:
-    "【着眼点】：分母分子の強い対称性と区間 [0, π/2]\n" +
-    "【公式/方針】：x = \\frac{\\pi}{2}-t と置換（King Property）\n" +
-    "【危険】：2Iの割り忘れ\n" +
-    "⇒ dx = -dt、区間は π/2→0 となり反転して戻す。\n" +
-    "I = \\int_0^{\\pi/2} \\frac{\\cos t}{\\cos t + \\sin t} dt\n" +
-    "元の式と足すと、2I = \\int_0^{\\pi/2} \\frac{\\sin x + \\cos x}{\\sin x + \\cos x} dx = \\int_0^{\\pi/2} 1 dx = \\frac{\\pi}{2}\n" +
+    "【着眼点】：分母分子の強い対称性と区間 [0, π/2]<br>" +
+    "【公式/方針】：x = \\frac{\\pi}{2}-t と置換（King Property）<br>" +
+    "【危険】：2Iの割り忘れ<br>" +
+    "⇒ dx = -dt、区間は π/2→0 となり反転して戻す。<br>" +
+    "I = \\int_0^{\\pi/2} \\frac{\\cos t}{\\cos t + \\sin t} dt<br>" +
+    "元の式と足すと、2I = \\int_0^{\\pi/2} \\frac{\\sin x + \\cos x}{\\sin x + \\cos x} dx = \\int_0^{\\pi/2} 1 dx = \\frac{\\pi}{2}<br>" +
     "よって I = \\frac{\\pi}{4}"
   },
   {
@@ -547,10 +547,10 @@ const masterData = [
     latexQ: "\\int_0^\\infty e^{-x} \\,dx",
     latexA: "1",
     note:
-    "【着眼点】：積分区間に無限大を含む\n" +
-    "【公式/方針】：上端を t とおき t→∞ の極限をとる\n" +
-    "【危険】：極限値の計算ミス\n" +
-    "⇒ \\lim_{t \\to \\infty} \\int_0^t e^{-x} dx = \\lim_{t \\to \\infty} \\left[ -e^{-x} \\right]_0^t\n" +
+    "【着眼点】：積分区間に無限大を含む<br>" +
+    "【公式/方針】：上端を t とおき t→∞ の極限をとる<br>" +
+    "【危険】：極限値の計算ミス<br>" +
+    "⇒ \\lim_{t \\to \\infty} \\int_0^t e^{-x} dx = \\lim_{t \\to \\infty} \\left[ -e^{-x} \\right]_0^t<br>" +
     "   = \\lim_{t \\to \\infty} (-e^{-t} + 1) = 0 + 1 = 1"
   },
   {
@@ -560,10 +560,10 @@ const masterData = [
     latexQ: "\\int x e^x \\,dx",
     latexA: "(x-1)e^x + C",
     note:
-    "【着眼点】：種類の異なる関数の積（多項式×指数）\n" +
-    "【公式/方針】：x を微分側、e^x を積分側に設定して部分積分\n" +
-    "【危険】：符号\n" +
-    "⇒ \\int x (e^x)' dx = x e^x - \\int 1 \\cdot e^x dx\n" +
+    "【着眼点】：種類の異なる関数の積（多項式×指数）<br>" +
+    "【公式/方針】：x を微分側、e^x を積分側に設定して部分積分<br>" +
+    "【危険】：符号<br>" +
+    "⇒ \\int x (e^x)' dx = x e^x - \\int 1 \\cdot e^x dx<br>" +
     "   = x e^x - e^x + C = (x-1)e^x + C"
   },
   {
@@ -573,10 +573,10 @@ const masterData = [
     latexQ: "\\int \\log x \\,dx",
     latexA: "x \\log x - x + C",
     note:
-    "【着眼点】：\\log x 単体\n" +
-    "【公式/方針】：1 × \\log x と見て部分積分\n" +
-    "【危険】：微分時の 1/x 処理\n" +
-    "⇒ \\int (x)' \\log x dx = x \\log x - \\int x \\cdot \\frac{1}{x} dx\n" +
+    "【着眼点】：\\log x 単体<br>" +
+    "【公式/方針】：1 × \\log x と見て部分積分<br>" +
+    "【危険】：微分時の 1/x 処理<br>" +
+    "⇒ \\int (x)' \\log x dx = x \\log x - \\int x \\cdot \\frac{1}{x} dx<br>" +
     "   = x \\log x - \\int 1 dx = x \\log x - x + C"
   },
   {
@@ -586,13 +586,13 @@ const masterData = [
     latexQ: "\\int_0^1 f(x) \\,dx",
     latexA: "\\int_0^1 f(1-x) \\,dx",
     note:
-    "【着眼点】：積分区間 [0, 1] における対称変換\n" +
-    "【公式/方針】：x = 1-t と置換\n" +
-    "【危険】：dx = -dt による区間の反転処理\n" +
-    "⇒ x = 1-t とおくと、dx = -dt。x が 0→1 のとき、t は 1→0。\n" +
-    "\\int_0^1 f(x) dx = \\int_1^0 f(1-t) (-dt)\n" +
-    "                 = \\int_0^1 f(1-t) dt\n" +
-    "定積分において積分変数の文字は自由なので、t を x に戻して完了。\n" +
+    "【着眼点】：積分区間 [0, 1] における対称変換<br>" +
+    "【公式/方針】：x = 1-t と置換<br>" +
+    "【危険】：dx = -dt による区間の反転処理<br>" +
+    "⇒ x = 1-t とおくと、dx = -dt。x が 0→1 のとき、t は 1→0。<br>" +
+    "\\int_0^1 f(x) dx = \\int_1^0 f(1-t) (-dt)<br>" +
+    "                 = \\int_0^1 f(1-t) dt<br>" +
+    "定積分において積分変数の文字は自由なので、t を x に戻して完了。<br>" +
     "※グラフを x=1/2 の直線で左右反転させても面積は変わらないという図形解釈も重要。"
   },
 
@@ -606,11 +606,11 @@ const masterData = [
     latexQ: "\\int \\frac{1}{x^2-1} \\,dx",
     latexA: "\\frac{1}{2} \\log \\left| \\frac{x-1}{x+1} \\right| + C",
     note:
-    "【着眼点】：分母が因数分解できる有理関数\n" +
-    "【公式/方針】：部分分数分解\n" +
-    "【危険】：係数調整 (1/2)\n" +
-    "⇒ \\frac{1}{x^2-1} = \\frac{1}{(x-1)(x+1)} = \\frac{1}{2} \\left( \\frac{1}{x-1} - \\frac{1}{x+1} \\right)\n" +
-    "与式 = \\frac{1}{2} \\int \\left( \\frac{1}{x-1} - \\frac{1}{x+1} \\right) dx\n" +
+    "【着眼点】：分母が因数分解できる有理関数<br>" +
+    "【公式/方針】：部分分数分解<br>" +
+    "【危険】：係数調整 (1/2)<br>" +
+    "⇒ \\frac{1}{x^2-1} = \\frac{1}{(x-1)(x+1)} = \\frac{1}{2} \\left( \\frac{1}{x-1} - \\frac{1}{x+1} \\right)<br>" +
+    "与式 = \\frac{1}{2} \\int \\left( \\frac{1}{x-1} - \\frac{1}{x+1} \\right) dx<br>" +
     "     = \\frac{1}{2} (\\log|x-1| - \\log|x+1|) + C = \\frac{1}{2} \\log\\left|\\frac{x-1}{x+1}\\right| + C"
   },
   {
@@ -620,11 +620,11 @@ const masterData = [
     latexQ: "\\int \\frac{x}{x^2+1} \\,dx",
     latexA: "\\frac{1}{2} \\log (x^2+1) + C",
     note:
-    "【着眼点】：分子の x が分母 x^2+1 の微分の形\n" +
-    "【公式/方針】：\\int \\frac{f'(x)}{f(x)} dx = \\log|f(x)| + C\n" +
-    "【危険】：係数調整 (1/2)\n" +
-    "⇒ (x^2+1)' = 2x より分子に無理やり作る。\n" +
-    "与式 = \\frac{1}{2} \\int \\frac{(x^2+1)'}{x^2+1} dx = \\frac{1}{2} \\log(x^2+1) + C\n" +
+    "【着眼点】：分子の x が分母 x^2+1 の微分の形<br>" +
+    "【公式/方針】：\\int \\frac{f'(x)}{f(x)} dx = \\log|f(x)| + C<br>" +
+    "【危険】：係数調整 (1/2)<br>" +
+    "⇒ (x^2+1)' = 2x より分子に無理やり作る。<br>" +
+    "与式 = \\frac{1}{2} \\int \\frac{(x^2+1)'}{x^2+1} dx = \\frac{1}{2} \\log(x^2+1) + C<br>" +
     "※ x^2+1 > 0 なので絶対値は不要。"
   },
   {
@@ -634,11 +634,11 @@ const masterData = [
     latexQ: "\\int \\sin^2 x \\,dx",
     latexA: "\\frac{x}{2} - \\frac{\\sin 2x}{4} + C",
     note:
-    "【着眼点】：\\sin^2 x などの偶数乗単体\n" +
-    "【公式/方針】：半角の公式で1次へ次数下げ\n" +
-    "【危険】：\\cos 2x の符号\n" +
-    "⇒ \\sin^2 x = \\frac{1-\\cos 2x}{2} を代入。\n" +
-    "与式 = \\int \\left( \\frac{1}{2} - \\frac{1}{2}\\cos 2x \\right) dx\n" +
+    "【着眼点】：\\sin^2 x などの偶数乗単体<br>" +
+    "【公式/方針】：半角の公式で1次へ次数下げ<br>" +
+    "【危険】：\\cos 2x の符号<br>" +
+    "⇒ \\sin^2 x = \\frac{1-\\cos 2x}{2} を代入。<br>" +
+    "与式 = \\int \\left( \\frac{1}{2} - \\frac{1}{2}\\cos 2x \\right) dx<br>" +
     "     = \\frac{x}{2} - \\frac{\\sin 2x}{4} + C"
   },
   {
@@ -648,12 +648,12 @@ const masterData = [
     latexQ: "\\int \\sin 3x \\cos x \\,dx",
     latexA: "-\\frac{\\cos 4x}{8} - \\frac{\\cos 2x}{4} + C",
     note:
-    "【着眼点】：角度 3x と x の積\n" +
-    "【公式/方針】：積和の公式で和の形へ分解\n" +
-    "【危険】：係数 1/2 と和差の計算ミス\n" +
-    "⇒ \\sin\\alpha \\cos\\beta = \\frac{1}{2}(\\sin(\\alpha+\\beta) + \\sin(\\alpha-\\beta)) を利用。\n" +
-    "与式 = \\frac{1}{2} \\int (\\sin 4x + \\sin 2x) dx\n" +
-    "     = \\frac{1}{2} \\left( -\\frac{\\cos 4x}{4} - \\frac{\\cos 2x}{2} \\right) + C\n" +
+    "【着眼点】：角度 3x と x の積<br>" +
+    "【公式/方針】：積和の公式で和の形へ分解<br>" +
+    "【危険】：係数 1/2 と和差の計算ミス<br>" +
+    "⇒ \\sin\\alpha \\cos\\beta = \\frac{1}{2}(\\sin(\\alpha+\\beta) + \\sin(\\alpha-\\beta)) を利用。<br>" +
+    "与式 = \\frac{1}{2} \\int (\\sin 4x + \\sin 2x) dx<br>" +
+    "     = \\frac{1}{2} \\left( -\\frac{\\cos 4x}{4} - \\frac{\\cos 2x}{2} \\right) + C<br>" +
     "     = -\\frac{\\cos 4x}{8} - \\frac{\\cos 2x}{4} + C"
   },
   {
@@ -663,11 +663,11 @@ const masterData = [
     latexQ: "\\int_0^1 x\\sqrt{1-x} \\,dx",
     latexA: "\\frac{4}{15}",
     note:
-    "【着眼点】：ルートの外に x があり展開できない\n" +
-    "【公式/方針】：\\sqrt{1-x} = t または 1-x = t と置換\n" +
-    "【危険】：区間変更と dx の変換\n" +
-    "⇒ 1-x = t とおくと x = 1-t、dx = -dt。区間は 0→1 から 1→0 へ。\n" +
-    "与式 = \\int_1^0 (1-t)\\sqrt{t} (-dt) = \\int_0^1 (t^{1/2} - t^{3/2}) dt\n" +
+    "【着眼点】：ルートの外に x があり展開できない<br>" +
+    "【公式/方針】：\\sqrt{1-x} = t または 1-x = t と置換<br>" +
+    "【危険】：区間変更と dx の変換<br>" +
+    "⇒ 1-x = t とおくと x = 1-t、dx = -dt。区間は 0→1 から 1→0 へ。<br>" +
+    "与式 = \\int_1^0 (1-t)\\sqrt{t} (-dt) = \\int_0^1 (t^{1/2} - t^{3/2}) dt<br>" +
     "     = \\left[ \\frac{2}{3}t^{3/2} - \\frac{2}{5}t^{5/2} \\right]_0^1 = \\frac{2}{3} - \\frac{2}{5} = \\frac{4}{15}"
   },
   {
@@ -677,11 +677,11 @@ const masterData = [
     latexQ: "\\int x^2 e^x \\,dx",
     latexA: "(x^2 - 2x + 2)e^x + C",
     note:
-    "【着眼点】：x^2 × e^x の形\n" +
-    "【公式/方針】：部分積分を2回実行して次数を下げる\n" +
-    "【危険】：2回目の符号と係数\n" +
-    "⇒ \\int x^2 (e^x)' dx = x^2 e^x - \\int 2x e^x dx\n" +
-    "   = x^2 e^x - 2 \\left( x e^x - \\int 1 \\cdot e^x dx \\right)\n" +
+    "【着眼点】：x^2 × e^x の形<br>" +
+    "【公式/方針】：部分積分を2回実行して次数を下げる<br>" +
+    "【危険】：2回目の符号と係数<br>" +
+    "⇒ \\int x^2 (e^x)' dx = x^2 e^x - \\int 2x e^x dx<br>" +
+    "   = x^2 e^x - 2 \\left( x e^x - \\int 1 \\cdot e^x dx \\right)<br>" +
     "   = x^2 e^x - 2x e^x + 2e^x + C = (x^2 - 2x + 2)e^x + C"
   },
   {
@@ -691,11 +691,11 @@ const masterData = [
     latexQ: "\\int \\frac{1}{\\sqrt{x+1}+\\sqrt{x}} \\,dx",
     latexA: "\\frac{2}{3}(x+1)^{\\frac{3}{2}} - \\frac{2}{3}x^{\\frac{3}{2}} + C",
     note:
-    "【着眼点】：分母にルートの和\n" +
-    "【公式/方針】：分母分子に \\sqrt{x+1}-\\sqrt{x} を掛ける\n" +
-    "【危険】：有理化後の符号\n" +
-    "⇒ 分母 = (x+1) - x = 1 となる。\n" +
-    "与式 = \\int (\\sqrt{x+1} - \\sqrt{x}) dx\n" +
+    "【着眼点】：分母にルートの和<br>" +
+    "【公式/方針】：分母分子に \\sqrt{x+1}-\\sqrt{x} を掛ける<br>" +
+    "【危険】：有理化後の符号<br>" +
+    "⇒ 分母 = (x+1) - x = 1 となる。<br>" +
+    "与式 = \\int (\\sqrt{x+1} - \\sqrt{x}) dx<br>" +
     "     = \\frac{2}{3}(x+1)^{3/2} - \\frac{2}{3}x^{3/2} + C"
   },
   {
@@ -705,11 +705,11 @@ const masterData = [
     latexQ: "\\int \\cos^3 x \\,dx",
     latexA: "\\sin x - \\frac{\\sin^3 x}{3} + C",
     note:
-    "【着眼点】：\\cos^3 x などの奇数乗\n" +
-    "【公式/方針】：\\cos x を1個分離し、残りを \\sin へ変換\n" +
-    "【危険】：相互関係公式の代入ミス\n" +
-    "⇒ \\cos^3 x = \\cos x (1-\\sin^2 x)。\\sin x = t とおくと \\cos x dx = dt。\n" +
-    "与式 = \\int (1-t^2) dt = t - \\frac{t^3}{3} + C\n" +
+    "【着眼点】：\\cos^3 x などの奇数乗<br>" +
+    "【公式/方針】：\\cos x を1個分離し、残りを \\sin へ変換<br>" +
+    "【危険】：相互関係公式の代入ミス<br>" +
+    "⇒ \\cos^3 x = \\cos x (1-\\sin^2 x)。\\sin x = t とおくと \\cos x dx = dt。<br>" +
+    "与式 = \\int (1-t^2) dt = t - \\frac{t^3}{3} + C<br>" +
     "     = \\sin x - \\frac{\\sin^3 x}{3} + C"
   },
   {
@@ -719,13 +719,13 @@ const masterData = [
     latexQ: "\\int e^x \\sin x \\,dx",
     latexA: "\\frac{1}{2} e^x (\\sin x - \\cos x) + C",
     note:
-    "【着眼点】：指数関数×三角関数の無限ループ\n" +
-    "【公式/方針】：2回部分積分して元の形 I を作り移項\n" +
-    "【危険】：移項時の符号と 2I の割り忘れ\n" +
-    "⇒ I = \\int e^x \\sin x dx とおく。\n" +
-    "1回目: I = e^x \\sin x - \\int e^x \\cos x dx\n" +
-    "2回目:   = e^x \\sin x - \\left( e^x \\cos x - \\int e^x (-\\sin x) dx \\right)\n" +
-    "         = e^x \\sin x - e^x \\cos x - I\n" +
+    "【着眼点】：指数関数×三角関数の無限ループ<br>" +
+    "【公式/方針】：2回部分積分して元の形 I を作り移項<br>" +
+    "【危険】：移項時の符号と 2I の割り忘れ<br>" +
+    "⇒ I = \\int e^x \\sin x dx とおく。<br>" +
+    "1回目: I = e^x \\sin x - \\int e^x \\cos x dx<br>" +
+    "2回目:   = e^x \\sin x - \\left( e^x \\cos x - \\int e^x (-\\sin x) dx \\right)<br>" +
+    "         = e^x \\sin x - e^x \\cos x - I<br>" +
     "2I = e^x(\\sin x - \\cos x) \\implies I = \\frac{1}{2}e^x(\\sin x - \\cos x) + C"
   },
   {
@@ -735,10 +735,10 @@ const masterData = [
     latexQ: "\\int \\frac{\\log x}{x} \\,dx",
     latexA: "\\frac{1}{2} (\\log x)^2 + C",
     note:
-    "【着眼点】：\\log x とその微分 1/x が積の形で共存\n" +
-    "【公式/方針】：\\log x = t と置換\n" +
-    "【危険】：部分積分してループする罠\n" +
-    "⇒ \\frac{1}{x} dx = dt より、\n" +
+    "【着眼点】：\\log x とその微分 1/x が積の形で共存<br>" +
+    "【公式/方針】：\\log x = t と置換<br>" +
+    "【危険】：部分積分してループする罠<br>" +
+    "⇒ \\frac{1}{x} dx = dt より、<br>" +
     "与式 = \\int t dt = \\frac{1}{2}t^2 + C = \\frac{1}{2}(\\log x)^2 + C"
   },
   {
@@ -748,10 +748,10 @@ const masterData = [
     latexQ: "\\int \\tan x \\,dx",
     latexA: "-\\log |\\cos x| + C",
     note:
-    "【着眼点】：\\tan x 単体\n" +
-    "【公式/方針】：\\frac{\\sin x}{\\cos x} にして f'/f 型を作る\n" +
-    "【危険】：マイナス符号\n" +
-    "⇒ (\\cos x)' = -\\sin x より、\n" +
+    "【着眼点】：\\tan x 単体<br>" +
+    "【公式/方針】：\\frac{\\sin x}{\\cos x} にして f'/f 型を作る<br>" +
+    "【危険】：マイナス符号<br>" +
+    "⇒ (\\cos x)' = -\\sin x より、<br>" +
     "与式 = -\\int \\frac{(\\cos x)'}{\\cos x} dx = -\\log|\\cos x| + C"
   },
   {
@@ -761,12 +761,12 @@ const masterData = [
     latexQ: "f(x) = x + \\int_0^{1/2} f(t) \\,dt",
     latexA: "f(x) = x + \\frac{1}{4}",
     note:
-    "【着眼点】：定積分は実数の定数である性質\n" +
-    "【公式/方針】：\\int_0^{1/2} f(t) dt = k と置く\n" +
-    "【危険】：k の方程式の計算ミス\n" +
-    "⇒ f(x) = x + k を元の定積分に代入する。\n" +
-    "k = \\int_0^{1/2} (t+k) dt = \\left[ \\frac{t^2}{2} + kt \\right]_0^{1/2} = \\frac{1}{8} + \\frac{1}{2}k\n" +
-    "\\frac{1}{2}k = \\frac{1}{8} \\implies k = \\frac{1}{4}\n" +
+    "【着眼点】：定積分は実数の定数である性質<br>" +
+    "【公式/方針】：\\int_0^{1/2} f(t) dt = k と置く<br>" +
+    "【危険】：k の方程式の計算ミス<br>" +
+    "⇒ f(x) = x + k を元の定積分に代入する。<br>" +
+    "k = \\int_0^{1/2} (t+k) dt = \\left[ \\frac{t^2}{2} + kt \\right]_0^{1/2} = \\frac{1}{8} + \\frac{1}{2}k<br>" +
+    "\\frac{1}{2}k = \\frac{1}{8} \\implies k = \\frac{1}{4}<br>" +
     "よって f(x) = x + \\frac{1}{4}"
   },
   {
@@ -776,10 +776,10 @@ const masterData = [
     latexQ: "\\frac{d}{dx} \\int_a^x f(t) \\,dt",
     latexA: "f(x)",
     note:
-    "【着眼点】：定積分の上端が変数 x\n" +
-    "【公式/方針】：微積分学の基本定理\n" +
-    "【危険】：上端が x 以外の時の合成関数微分\n" +
-    "⇒ F'(t) = f(t) とすると、\\int_a^x f(t) dt = F(x) - F(a)。\n" +
+    "【着眼点】：定積分の上端が変数 x<br>" +
+    "【公式/方針】：微積分学の基本定理<br>" +
+    "【危険】：上端が x 以外の時の合成関数微分<br>" +
+    "⇒ F'(t) = f(t) とすると、\\int_a^x f(t) dt = F(x) - F(a)。<br>" +
     "これを x で微分すると F'(x) - 0 = f(x) となる。"
   },
   {
@@ -789,13 +789,13 @@ const masterData = [
     latexQ: "\\int \\frac{x}{(x^2+1)^2} \\,dx",
     latexA: "-\\frac{1}{2(x^2+1)} + C",
     note:
-    "【着眼点】：分子の x が分母 x^2+1 の微分形に近い\n" +
-    "【公式/方針】：x^2+1 = t 置換（微分接触型）\n" +
-    "【危険】：係数調整 (1/2) とマイナス乗の積分ミス\n" +
-    "⇒ x^2+1 = t とおくと、2x dx = dt より x dx = \\frac{1}{2} dt\n" +
-    "与式 = \\int \\frac{1}{t^2} \\cdot \\frac{1}{2} dt\n" +
-    "     = \\frac{1}{2} \\int t^{-2} dt\n" +
-    "     = \\frac{1}{2} \\cdot \\left( -\\frac{1}{t} \\right) + C\n" +
+    "【着眼点】：分子の x が分母 x^2+1 の微分形に近い<br>" +
+    "【公式/方針】：x^2+1 = t 置換（微分接触型）<br>" +
+    "【危険】：係数調整 (1/2) とマイナス乗の積分ミス<br>" +
+    "⇒ x^2+1 = t とおくと、2x dx = dt より x dx = \\frac{1}{2} dt<br>" +
+    "与式 = \\int \\frac{1}{t^2} \\cdot \\frac{1}{2} dt<br>" +
+    "     = \\frac{1}{2} \\int t^{-2} dt<br>" +
+    "     = \\frac{1}{2} \\cdot \\left( -\\frac{1}{t} \\right) + C<br>" +
     "     = -\\frac{1}{2(x^2+1)} + C"
   },
   {
@@ -805,14 +805,14 @@ const masterData = [
     latexQ: "\\int_{-\\pi}^{\\pi} x\\sin x \\,dx",
     latexA: "2\\pi",
     note:
-    "【着眼点】：対称な積分区間 [-π, π] と関数の偶奇\n" +
-    "【公式/方針】：(奇)×(奇)=(偶) より区間を 0→π にして2倍\n" +
-    "【危険】：偶奇の判定ミスと部分積分の符号\n" +
-    "⇒ f(x) = x \\sin x とすると、f(-x) = (-x)\\sin(-x) = x \\sin x より偶関数。\n" +
-    "与式 = 2 \\int_0^\\pi x \\sin x dx\n" +
-    "部分積分を実行 (x を微分側):\n" +
-    "     = 2 \\left( [x (-\\cos x)]_0^\\pi - \\int_0^\\pi 1 \\cdot (-\\cos x) dx \\right)\n" +
-    "     = 2 \\left( -\\pi \\cos\\pi + 0 + [\\sin x]_0^\\pi \\right)\n" +
+    "【着眼点】：対称な積分区間 [-π, π] と関数の偶奇<br>" +
+    "【公式/方針】：(奇)×(奇)=(偶) より区間を 0→π にして2倍<br>" +
+    "【危険】：偶奇の判定ミスと部分積分の符号<br>" +
+    "⇒ f(x) = x \\sin x とすると、f(-x) = (-x)\\sin(-x) = x \\sin x より偶関数。<br>" +
+    "与式 = 2 \\int_0^\\pi x \\sin x dx<br>" +
+    "部分積分を実行 (x を微分側):<br>" +
+    "     = 2 \\left( [x (-\\cos x)]_0^\\pi - \\int_0^\\pi 1 \\cdot (-\\cos x) dx \\right)<br>" +
+    "     = 2 \\left( -\\pi \\cos\\pi + 0 + [\\sin x]_0^\\pi \\right)<br>" +
     "     = 2 \\left( -\\pi(-1) + 0 \\right) = 2\\pi"
   },
 
@@ -826,10 +826,10 @@ const masterData = [
     latexQ: "\\int e^x (\\sin x + \\cos x) \\,dx",
     latexA: "e^x \\sin x + C",
     note:
-    "【着眼点】：e^x と 三角関数の和の積\n" +
-    "【公式/方針】：積の微分の逆演算 (e^x f(x))' = e^x (f(x)+f'(x))\n" +
-    "【危険】：f(x) の見極め\n" +
-    "⇒ f(x) = \\sin x と見ると、f'(x) = \\cos x。\n" +
+    "【着眼点】：e^x と 三角関数の和の積<br>" +
+    "【公式/方針】：積の微分の逆演算 (e^x f(x))' = e^x (f(x)+f'(x))<br>" +
+    "【危険】：f(x) の見極め<br>" +
+    "⇒ f(x) = \\sin x と見ると、f'(x) = \\cos x。<br>" +
     "与式 = \\int e^x (\\sin x + (\\sin x)') dx = e^x \\sin x + C"
   },
   {
@@ -839,11 +839,11 @@ const masterData = [
     latexQ: "\\int \\frac{1}{\\sqrt{x^2+A}} \\,dx",
     latexA: "\\log |x + \\sqrt{x^2+A}| + C",
     note:
-    "【着眼点】：分母に \\sqrt{x^2+A} 単体\n" +
-    "【公式/方針】：t = x + \\sqrt{x^2+A} と置く超有名置換\n" +
-    "【危険】：dt の計算処理\n" +
-    "⇒ dt = \\left( 1 + \\frac{x}{\\sqrt{x^2+A}} \\right) dx = \\frac{\\sqrt{x^2+A}+x}{\\sqrt{x^2+A}} dx = \\frac{t}{\\sqrt{x^2+A}} dx\n" +
-    "よって \\frac{1}{\\sqrt{x^2+A}} dx = \\frac{1}{t} dt となり、\n" +
+    "【着眼点】：分母に \\sqrt{x^2+A} 単体<br>" +
+    "【公式/方針】：t = x + \\sqrt{x^2+A} と置く超有名置換<br>" +
+    "【危険】：dt の計算処理<br>" +
+    "⇒ dt = \\left( 1 + \\frac{x}{\\sqrt{x^2+A}} \\right) dx = \\frac{\\sqrt{x^2+A}+x}{\\sqrt{x^2+A}} dx = \\frac{t}{\\sqrt{x^2+A}} dx<br>" +
+    "よって \\frac{1}{\\sqrt{x^2+A}} dx = \\frac{1}{t} dt となり、<br>" +
     "与式 = \\int \\frac{1}{t} dt = \\log|t| + C = \\log|x+\\sqrt{x^2+A}| + C"
   },
   {
@@ -853,12 +853,12 @@ const masterData = [
     latexQ: "\\int \\frac{1}{\\cos x} \\,dx",
     latexA: "\\frac{1}{2} \\log \\left| \\frac{1+\\sin x}{1-\\sin x} \\right| + C",
     note:
-    "【着眼点】：分母に \\cos x 単体\n" +
-    "【公式/方針】：分母分子に \\cos x を掛け、\\sin x = t 置換\n" +
-    "【危険】：部分分数分解の係数\n" +
-    "⇒ 与式 = \\int \\frac{\\cos x}{\\cos^2 x} dx = \\int \\frac{\\cos x}{1-\\sin^2 x} dx\n" +
-    "\\sin x = t とおくと \\cos x dx = dt。\n" +
-    "\\int \\frac{1}{1-t^2} dt = \\frac{1}{2} \\int \\left( \\frac{1}{1+t} + \\frac{1}{1-t} \\right) dt\n" +
+    "【着眼点】：分母に \\cos x 単体<br>" +
+    "【公式/方針】：分母分子に \\cos x を掛け、\\sin x = t 置換<br>" +
+    "【危険】：部分分数分解の係数<br>" +
+    "⇒ 与式 = \\int \\frac{\\cos x}{\\cos^2 x} dx = \\int \\frac{\\cos x}{1-\\sin^2 x} dx<br>" +
+    "\\sin x = t とおくと \\cos x dx = dt。<br>" +
+    "\\int \\frac{1}{1-t^2} dt = \\frac{1}{2} \\int \\left( \\frac{1}{1+t} + \\frac{1}{1-t} \\right) dt<br>" +
     "   = \\frac{1}{2} (\\log|1+t| - \\log|1-t|) + C = \\frac{1}{2} \\log\\left|\\frac{1+\\sin x}{1-\\sin x}\\right| + C"
   },
   {
@@ -868,11 +868,11 @@ const masterData = [
     latexQ: "\\int_0^\\pi x \\sin x \\,dx",
     latexA: "\\pi",
     note:
-    "【着眼点】：x × (\\sin x のみで構成された式) と区間 [0, π]\n" +
-    "【公式/方針】：x = \\pi - t と置換して x を消去（King Property）\n" +
-    "【危険】：2I の割り忘れ\n" +
-    "⇒ dx = -dt。区間反転を戻し、\\sin(\\pi-t) = \\sin t より、\n" +
-    "I = \\int_0^\\pi (\\pi-t)\\sin t dt = \\pi \\int_0^\\pi \\sin t dt - I\n" +
+    "【着眼点】：x × (\\sin x のみで構成された式) と区間 [0, π]<br>" +
+    "【公式/方針】：x = \\pi - t と置換して x を消去（King Property）<br>" +
+    "【危険】：2I の割り忘れ<br>" +
+    "⇒ dx = -dt。区間反転を戻し、\\sin(\\pi-t) = \\sin t より、<br>" +
+    "I = \\int_0^\\pi (\\pi-t)\\sin t dt = \\pi \\int_0^\\pi \\sin t dt - I<br>" +
     "2I = \\pi \\left[ -\\cos x \\right]_0^\\pi = 2\\pi \\implies I = \\pi"
   },
   {
@@ -882,11 +882,11 @@ const masterData = [
     latexQ: "\\int \\frac{1}{1+e^x} \\,dx",
     latexA: "x - \\log (1+e^x) + C",
     note:
-    "【着眼点】：分母が 1+e^x で分子が 1\n" +
-    "【公式/方針】：分子を (1+e^x) - e^x と変形して f'/f を作る\n" +
-    "【危険】：符号調整\n" +
-    "⇒ 与式 = \\int \\frac{(1+e^x) - e^x}{1+e^x} dx\n" +
-    "     = \\int \\left( 1 - \\frac{e^x}{1+e^x} \\right) dx\n" +
+    "【着眼点】：分母が 1+e^x で分子が 1<br>" +
+    "【公式/方針】：分子を (1+e^x) - e^x と変形して f'/f を作る<br>" +
+    "【危険】：符号調整<br>" +
+    "⇒ 与式 = \\int \\frac{(1+e^x) - e^x}{1+e^x} dx<br>" +
+    "     = \\int \\left( 1 - \\frac{e^x}{1+e^x} \\right) dx<br>" +
     "     = x - \\log(1+e^x) + C"
   },
   {
@@ -896,10 +896,10 @@ const masterData = [
     latexQ: "\\int_0^a \\sqrt{a^2-x^2} \\,dx",
     latexA: "\\frac{\\pi a^2}{4}",
     note:
-    "【着眼点】：ルート内に a^2-x^2\n" +
-    "【公式/方針】：図形的に円の面積として捉える\n" +
-    "【危険】：置換積分によるタイムロス\n" +
-    "⇒ x = a\\sin\\theta と置換しても解けるが、y = \\sqrt{a^2-x^2} は半径 a の円の上半分。\n" +
+    "【着眼点】：ルート内に a^2-x^2<br>" +
+    "【公式/方針】：図形的に円の面積として捉える<br>" +
+    "【危険】：置換積分によるタイムロス<br>" +
+    "⇒ x = a\\sin\\theta と置換しても解けるが、y = \\sqrt{a^2-x^2} は半径 a の円の上半分。<br>" +
     "区間 [0, a] は第一象限の四分円なので、面積解釈より即答で \\frac{\\pi a^2}{4}。"
   },
   {
@@ -909,12 +909,12 @@ const masterData = [
     latexQ: "\\int \\log(x^2+1) \\,dx",
     latexA: "x \\log(x^2+1) - 2x + 2\\arctan x + C",
     note:
-    "【着眼点】：\\log(x^2+1) 単体\n" +
-    "【公式/方針】：1 × \\log(x^2+1) と見て部分積分\n" +
-    "【危険】：残った有理関数の次数下げ\n" +
-    "⇒ \\int (x)' \\log(x^2+1) dx = x \\log(x^2+1) - \\int x \\cdot \\frac{2x}{x^2+1} dx\n" +
-    "後者の積分: \\int \\frac{2(x^2+1)-2}{x^2+1} dx = \\int \\left( 2 - \\frac{2}{x^2+1} \\right) dx\n" +
-    "ここで \\int \\frac{1}{x^2+1} dx = \\arctan x より、\n" +
+    "【着眼点】：\\log(x^2+1) 単体<br>" +
+    "【公式/方針】：1 × \\log(x^2+1) と見て部分積分<br>" +
+    "【危険】：残った有理関数の次数下げ<br>" +
+    "⇒ \\int (x)' \\log(x^2+1) dx = x \\log(x^2+1) - \\int x \\cdot \\frac{2x}{x^2+1} dx<br>" +
+    "後者の積分: \\int \\frac{2(x^2+1)-2}{x^2+1} dx = \\int \\left( 2 - \\frac{2}{x^2+1} \\right) dx<br>" +
+    "ここで \\int \\frac{1}{x^2+1} dx = \\arctan x より、<br>" +
     "与式 = x \\log(x^2+1) - 2x + 2\\arctan x + C"
   },
   {
@@ -924,12 +924,12 @@ const masterData = [
     latexQ: "I_n = \\int_0^{\\frac{\\pi}{4}} \\tan^n x \\,dx \\text{ に対する } I_n + I_{n-2}",
     latexA: "\\frac{1}{n-1}",
     note:
-    "【着眼点】：\\tan の累乗の漸化式\n" +
-    "【公式/方針】：I_n + I_{n-2} を計算して \\tan^2 x + 1 を作る\n" +
-    "【危険】：区間の代入処理\n" +
-    "⇒ I_n + I_{n-2} = \\int_0^{\\pi/4} \\tan^{n-2} x (\\tan^2 x + 1) dx\n" +
-    "   = \\int_0^{\\pi/4} \\tan^{n-2} x \\cdot \\frac{1}{\\cos^2 x} dx\n" +
-    "(\\tan x)' = \\frac{1}{\\cos^2 x} より、\n" +
+    "【着眼点】：\\tan の累乗の漸化式<br>" +
+    "【公式/方針】：I_n + I_{n-2} を計算して \\tan^2 x + 1 を作る<br>" +
+    "【危険】：区間の代入処理<br>" +
+    "⇒ I_n + I_{n-2} = \\int_0^{\\pi/4} \\tan^{n-2} x (\\tan^2 x + 1) dx<br>" +
+    "   = \\int_0^{\\pi/4} \\tan^{n-2} x \\cdot \\frac{1}{\\cos^2 x} dx<br>" +
+    "(\\tan x)' = \\frac{1}{\\cos^2 x} より、<br>" +
     "与式 = \\left[ \\frac{\\tan^{n-1} x}{n-1} \\right]_0^{\\pi/4} = \\frac{1}{n-1}"
   },
   {
@@ -939,10 +939,10 @@ const masterData = [
     latexQ: "\\lim_{n \\to \\infty} \\frac{1}{n} \\sum_{k=1}^n \\sin \\left( \\frac{k\\pi}{n} \\right)",
     latexA: "\\frac{2}{\\pi}",
     note:
-    "【着眼点】：\\lim と \\frac{1}{n} \\sum の共存\n" +
-    "【公式/方針】：区分求積法 \\lim_{n\\to\\infty} \\frac{1}{n}\\sum f\\left(\\frac{k}{n}\\right) = \\int_0^1 f(x) dx\n" +
-    "【危険】：合成関数の係数 π 割り忘れ\n" +
-    "⇒ 与式 = \\int_0^1 \\sin(\\pi x) dx = \\left[ -\\frac{1}{\\pi}\\cos(\\pi x) \\right]_0^1\n" +
+    "【着眼点】：\\lim と \\frac{1}{n} \\sum の共存<br>" +
+    "【公式/方針】：区分求積法 \\lim_{n\\to\\infty} \\frac{1}{n}\\sum f\\left(\\frac{k}{n}\\right) = \\int_0^1 f(x) dx<br>" +
+    "【危険】：合成関数の係数 π 割り忘れ<br>" +
+    "⇒ 与式 = \\int_0^1 \\sin(\\pi x) dx = \\left[ -\\frac{1}{\\pi}\\cos(\\pi x) \\right]_0^1<br>" +
     "     = -\\frac{1}{\\pi} (-1 - 1) = \\frac{2}{\\pi}"
   },
   {
@@ -952,12 +952,12 @@ const masterData = [
     latexQ: "0 \\le x \\le 1 \\text{ における } \\int_0^1 e^{-x^2} \\,dx \\text{ の下限}",
     latexA: "1 - \\frac{1}{e}",
     note:
-    "【着眼点】：e^{-x^2} のような初等的に積分できない関数\n" +
-    "【公式/方針】：積分区間 0≦x≦1 における x^2≦x を利用\n" +
-    "【危険】：マイナス乗による不等号の逆転\n" +
-    "⇒ 0≦x≦1 において x^2 ≦ x。\n" +
-    "両辺にマイナスを掛けて -x^2 ≧ -x。\n" +
-    "底 e > 1 より e^{-x^2} ≧ e^{-x}。\n" +
+    "【着眼点】：e^{-x^2} のような初等的に積分できない関数<br>" +
+    "【公式/方針】：積分区間 0≦x≦1 における x^2≦x を利用<br>" +
+    "【危険】：マイナス乗による不等号の逆転<br>" +
+    "⇒ 0≦x≦1 において x^2 ≦ x。<br>" +
+    "両辺にマイナスを掛けて -x^2 ≧ -x。<br>" +
+    "底 e > 1 より e^{-x^2} ≧ e^{-x}。<br>" +
     "\\int_0^1 e^{-x^2} dx ≧ \\int_0^1 e^{-x} dx = \\left[ -e^{-x} \\right]_0^1 = 1 - \\frac{1}{e}"
   },
   {
@@ -967,16 +967,16 @@ const masterData = [
     latexQ: "\\int \\cos(\\log x) \\,dx",
     latexA: "\\frac{x}{2}(\\sin(\\log x)+\\cos(\\log x))+C",
     note:
-    "【着眼点】：単体の合成関数には 1× を補う\n" +
-    "【公式/方針】：1×\\cos(\\log x) と見て2回部分積分\n" +
-    "【危険】：合成関数の微分時の 1/x 掛け忘れと移項符号\n" +
-    "⇒ I = \\int 1 \\cdot \\cos(\\log x) dx とおく。\n" +
-    "1回目: I = x \\cos(\\log x) - \\int x \\cdot \\left( -\\sin(\\log x) \\cdot \\frac{1}{x} \\right) dx\n" +
-    "         = x \\cos(\\log x) + \\int \\sin(\\log x) dx\n" +
-    "2回目: \\int 1 \\cdot \\sin(\\log x) dx を同様に部分積分\n" +
-    "         = x \\sin(\\log x) - \\int x \\cdot \\left( \\cos(\\log x) \\cdot \\frac{1}{x} \\right) dx\n" +
-    "         = x \\sin(\\log x) - I\n" +
-    "代入して整理: I = x \\cos(\\log x) + x \\sin(\\log x) - I\n" +
+    "【着眼点】：単体の合成関数には 1× を補う<br>" +
+    "【公式/方針】：1×\\cos(\\log x) と見て2回部分積分<br>" +
+    "【危険】：合成関数の微分時の 1/x 掛け忘れと移項符号<br>" +
+    "⇒ I = \\int 1 \\cdot \\cos(\\log x) dx とおく。<br>" +
+    "1回目: I = x \\cos(\\log x) - \\int x \\cdot \\left( -\\sin(\\log x) \\cdot \\frac{1}{x} \\right) dx<br>" +
+    "         = x \\cos(\\log x) + \\int \\sin(\\log x) dx<br>" +
+    "2回目: \\int 1 \\cdot \\sin(\\log x) dx を同様に部分積分<br>" +
+    "         = x \\sin(\\log x) - \\int x \\cdot \\left( \\cos(\\log x) \\cdot \\frac{1}{x} \\right) dx<br>" +
+    "         = x \\sin(\\log x) - I<br>" +
+    "代入して整理: I = x \\cos(\\log x) + x \\sin(\\log x) - I<br>" +
     "2I = x(\\sin(\\log x) + \\cos(\\log x)) より I を導出。"
   },
 
@@ -990,14 +990,14 @@ const masterData = [
     latexQ: "\\int_0^{\\frac{\\pi}{4}} \\log(1+\\tan x) \\,dx",
     latexA: "\\frac{\\pi}{8} \\log 2",
     note:
-    "【着眼点】：区間 [0, π/4] と \\log(1+\\tan x)\n" +
-    "【公式/方針】：x = \\frac{\\pi}{4}-t 置換と \\tan の加法定理\n" +
-    "【危険】：加法定理の展開と通分ミス\n" +
-    "⇒ dx = -dt。区間反転を戻す。\n" +
-    "1+\\tan\\left(\\frac{\\pi}{4}-t\\right) = 1 + \\frac{1-\\tan t}{1+\\tan t} = \\frac{2}{1+\\tan t} より、\n" +
-    "I = \\int_0^{\\pi/4} \\log\\left(\\frac{2}{1+\\tan t}\\right) dt\n" +
-    "  = \\int_0^{\\pi/4} (\\log 2 - \\log(1+\\tan t)) dt\n" +
-    "  = \\frac{\\pi}{4}\\log 2 - I\n" +
+    "【着眼点】：区間 [0, π/4] と \\log(1+\\tan x)<br>" +
+    "【公式/方針】：x = \\frac{\\pi}{4}-t 置換と \\tan の加法定理<br>" +
+    "【危険】：加法定理の展開と通分ミス<br>" +
+    "⇒ dx = -dt。区間反転を戻す。<br>" +
+    "1+\\tan\\left(\\frac{\\pi}{4}-t\\right) = 1 + \\frac{1-\\tan t}{1+\\tan t} = \\frac{2}{1+\\tan t} より、<br>" +
+    "I = \\int_0^{\\pi/4} \\log\\left(\\frac{2}{1+\\tan t}\\right) dt<br>" +
+    "  = \\int_0^{\\pi/4} (\\log 2 - \\log(1+\\tan t)) dt<br>" +
+    "  = \\frac{\\pi}{4}\\log 2 - I<br>" +
     "2I = \\frac{\\pi}{4}\\log 2 \\implies I = \\frac{\\pi}{8}\\log 2"
   },
   {
@@ -1007,12 +1007,12 @@ const masterData = [
     latexQ: "\\int_0^{\\frac{\\pi}{2}} \\frac{\\sqrt{\\sin x}}{\\sqrt{\\sin x}+\\sqrt{\\cos x}} \\,dx",
     latexA: "\\frac{\\pi}{4}",
     note:
-    "【着眼点】：分母分子の強烈な対称性と区間 [0, π/2]\n" +
-    "【公式/方針】：x = \\frac{\\pi}{2}-t と置換（King Property）\n" +
-    "【危険】：足した後の約分忘れ\n" +
-    "⇒ dx = -dt。\\sin(π/2-t)=\\cos t より分子が \\sqrt{\\cos t} になる。\n" +
-    "I = \\int_0^{\\pi/2} \\frac{\\sqrt{\\cos t}}{\\sqrt{\\cos t}+\\sqrt{\\sin t}} dt\n" +
-    "元の式と足すと、2I = \\int_0^{\\pi/2} \\frac{\\sqrt{\\sin x}+\\sqrt{\\cos x}}{\\sqrt{\\sin x}+\\sqrt{\\cos x}} dx = \\int_0^{\\pi/2} 1 dx = \\frac{\\pi}{2}\n" +
+    "【着眼点】：分母分子の強烈な対称性と区間 [0, π/2]<br>" +
+    "【公式/方針】：x = \\frac{\\pi}{2}-t と置換（King Property）<br>" +
+    "【危険】：足した後の約分忘れ<br>" +
+    "⇒ dx = -dt。\\sin(π/2-t)=\\cos t より分子が \\sqrt{\\cos t} になる。<br>" +
+    "I = \\int_0^{\\pi/2} \\frac{\\sqrt{\\cos t}}{\\sqrt{\\cos t}+\\sqrt{\\sin t}} dt<br>" +
+    "元の式と足すと、2I = \\int_0^{\\pi/2} \\frac{\\sqrt{\\sin x}+\\sqrt{\\cos x}}{\\sqrt{\\sin x}+\\sqrt{\\cos x}} dx = \\int_0^{\\pi/2} 1 dx = \\frac{\\pi}{2}<br>" +
     "よって I = \\frac{\\pi}{4}"
   },
   {
@@ -1022,17 +1022,17 @@ const masterData = [
     latexQ: "\\int_0^{\\frac{\\pi}{2}} \\log(\\sin x) \\,dx",
     latexA: "-\\frac{\\pi}{2} \\log 2",
     note:
-    "【着眼点】：対数と三角関数の極限的融合\n" +
-    "【公式/方針】：x=π/2-t の対称変形と2倍角の公式\n" +
-    "【危険】：置換後の変数統一と区間処理のミス\n" +
-    "⇒ [通称: King Property] より I = \\int_0^{\\pi/2} \\log(\\cos x) dx と等値。\n" +
-    "足して2倍角を作る：\n" +
-    "2I = \\int_0^{\\pi/2} \\log(\\sin x \\cos x) dx\n" +
-    "   = \\int_0^{\\pi/2} (\\log(\\sin 2x) - \\log 2) dx\n" +
-    "前半の積分で 2x=u と置換 (dx=du/2, 区間0→π)：\n" +
-    "\\int_0^{\\pi/2} \\log(\\sin 2x) dx = \\frac{1}{2} \\int_0^\\pi \\log(\\sin u) du\n" +
-    "対称性 (u=π-t) より 0→π の積分は 0→π/2 の積分の2倍になるため、\n" +
-    "\\frac{1}{2} \\times 2 \\int_0^{\\pi/2} \\log(\\sin u) du = I に戻る。\n" +
+    "【着眼点】：対数と三角関数の極限的融合<br>" +
+    "【公式/方針】：x=π/2-t の対称変形と2倍角の公式<br>" +
+    "【危険】：置換後の変数統一と区間処理のミス<br>" +
+    "⇒ [通称: King Property] より I = \\int_0^{\\pi/2} \\log(\\cos x) dx と等値。<br>" +
+    "足して2倍角を作る：<br>" +
+    "2I = \\int_0^{\\pi/2} \\log(\\sin x \\cos x) dx<br>" +
+    "   = \\int_0^{\\pi/2} (\\log(\\sin 2x) - \\log 2) dx<br>" +
+    "前半の積分で 2x=u と置換 (dx=du/2, 区間0→π)：<br>" +
+    "\\int_0^{\\pi/2} \\log(\\sin 2x) dx = \\frac{1}{2} \\int_0^\\pi \\log(\\sin u) du<br>" +
+    "対称性 (u=π-t) より 0→π の積分は 0→π/2 の積分の2倍になるため、<br>" +
+    "\\frac{1}{2} \\times 2 \\int_0^{\\pi/2} \\log(\\sin u) du = I に戻る。<br>" +
     "よって、2I = I - \\frac{\\pi}{2}\\log 2 \\implies I = -\\frac{\\pi}{2} \\log 2"
   },
   {
@@ -1042,14 +1042,14 @@ const masterData = [
     latexQ: "\\int_0^1 \\frac{x^b - x^a}{\\log x} \\,dx",
     latexA: "\\log\\left(\\frac{b+1}{a+1}\\right)",
     note:
-    "【着眼点】：分母に \\log x がある不自然さ\n" +
-    "【公式/方針】：\\frac{x^b-x^a}{\\log x} = \\int_a^b x^y dy と見て積分順序を交換\n" +
-    "【危険】：順序交換時の積分変数と区間の対応\n" +
-    "⇒ 与式 = \\int_0^1 \\left( \\int_a^b x^y dy \\right) dx\n" +
-    "フビニの定理より順序交換：\n" +
-    "     = \\int_a^b \\left( \\int_0^1 x^y dx \\right) dy\n" +
-    "     = \\int_a^b \\left[ \\frac{x^{y+1}}{y+1} \\right]_0^1 dy\n" +
-    "     = \\int_a^b \\frac{1}{y+1} dy\n" +
+    "【着眼点】：分母に \\log x がある不自然さ<br>" +
+    "【公式/方針】：\\frac{x^b-x^a}{\\log x} = \\int_a^b x^y dy と見て積分順序を交換<br>" +
+    "【危険】：順序交換時の積分変数と区間の対応<br>" +
+    "⇒ 与式 = \\int_0^1 \\left( \\int_a^b x^y dy \\right) dx<br>" +
+    "フビニの定理より順序交換：<br>" +
+    "     = \\int_a^b \\left( \\int_0^1 x^y dx \\right) dy<br>" +
+    "     = \\int_a^b \\left[ \\frac{x^{y+1}}{y+1} \\right]_0^1 dy<br>" +
+    "     = \\int_a^b \\frac{1}{y+1} dy<br>" +
     "     = \\left[ \\log|y+1| \\right]_a^b = \\log\\left(\\frac{b+1}{a+1}\\right)"
   },
   {
@@ -1059,13 +1059,13 @@ const masterData = [
     latexQ: "\\int \\frac{1}{2 + \\cos x} \\,dx",
     latexA: "\\frac{2}{\\sqrt{3}} \\arctan\\left(\\frac{\\tan(x/2)}{\\sqrt{3}}\\right) + C",
     note:
-    "【着眼点】：三角関数の分母のみの有理式\n" +
-    "【公式/方針】：t = \\tan(x/2) と置換する万能手法\n" +
-    "【危険】：変換式の暗記・導出ミス\n" +
-    "⇒ \\cos x = \\frac{1-t^2}{1+t^2}、dx = \\frac{2}{1+t^2} dt を代入。\n" +
-    "与式 = \\int \\frac{1}{2 + \\frac{1-t^2}{1+t^2}} \\cdot \\frac{2}{1+t^2} dt\n" +
-    "     = \\int \\frac{2}{2(1+t^2) + (1-t^2)} dt = \\int \\frac{2}{t^2+3} dt\n" +
-    "t = \\sqrt{3}\\tan\\theta と置換すると、\n" +
+    "【着眼点】：三角関数の分母のみの有理式<br>" +
+    "【公式/方針】：t = \\tan(x/2) と置換する万能手法<br>" +
+    "【危険】：変換式の暗記・導出ミス<br>" +
+    "⇒ \\cos x = \\frac{1-t^2}{1+t^2}、dx = \\frac{2}{1+t^2} dt を代入。<br>" +
+    "与式 = \\int \\frac{1}{2 + \\frac{1-t^2}{1+t^2}} \\cdot \\frac{2}{1+t^2} dt<br>" +
+    "     = \\int \\frac{2}{2(1+t^2) + (1-t^2)} dt = \\int \\frac{2}{t^2+3} dt<br>" +
+    "t = \\sqrt{3}\\tan\\theta と置換すると、<br>" +
     "     = \\frac{2}{\\sqrt{3}} \\arctan\\left(\\frac{t}{\\sqrt{3}}\\right) + C = \\frac{2}{\\sqrt{3}} \\arctan\\left(\\frac{\\tan(x/2)}{\\sqrt{3}}\\right) + C"
   },
   {
@@ -1075,13 +1075,13 @@ const masterData = [
     latexQ: "\\int_0^{\\infty} \\frac{\\sin x}{x} \\,dx",
     latexA: "\\frac{\\pi}{2}",
     note:
-    "【着眼点】：無限大区間の \\frac{\\sin x}{x}\n" +
-    "【公式/方針】：\\frac{1}{x} = \\int_0^\\infty e^{-xy} dy を用いて二重積分へ\n" +
-    "【危険】：広義積分の順序交換の正当性\n" +
-    "⇒ 与式 = \\int_0^\\infty \\sin x \\left( \\int_0^\\infty e^{-xy} dy \\right) dx\n" +
-    "順序交換を実行：\n" +
-    "     = \\int_0^\\infty \\left( \\int_0^\\infty e^{-xy} \\sin x dx \\right) dy\n" +
-    "内側の積分は e^{-xy}\\sin x のラプラス変換より \\frac{1}{y^2+1}。\n" +
+    "【着眼点】：無限大区間の \\frac{\\sin x}{x}<br>" +
+    "【公式/方針】：\\frac{1}{x} = \\int_0^\\infty e^{-xy} dy を用いて二重積分へ<br>" +
+    "【危険】：広義積分の順序交換の正当性<br>" +
+    "⇒ 与式 = \\int_0^\\infty \\sin x \\left( \\int_0^\\infty e^{-xy} dy \\right) dx<br>" +
+    "順序交換を実行：<br>" +
+    "     = \\int_0^\\infty \\left( \\int_0^\\infty e^{-xy} \\sin x dx \\right) dy<br>" +
+    "内側の積分は e^{-xy}\\sin x のラプラス変換より \\frac{1}{y^2+1}。<br>" +
     "     = \\int_0^\\infty \\frac{1}{1+y^2} dy = \\left[ \\arctan y \\right]_0^\\infty = \\frac{\\pi}{2}"
   },
   {
@@ -1091,12 +1091,12 @@ const masterData = [
     latexQ: "\\int_0^{\\pi} \\log(1-2a\\cos x + a^2) \\,dx \\quad (|a| < 1)",
     latexA: "0",
     note:
-    "【着眼点】：積分変数 x 以外のパラメータ a を含む\n" +
-    "【公式/方針】：I(a) とおき、積分記号下で a について微分\n" +
-    "【危険】：微分後の三角関数積分の煩雑さ\n" +
-    "⇒ I'(a) = \\int_0^\\pi \\frac{-2\\cos x + 2a}{1-2a\\cos x+a^2} dx\n" +
-    "ここで \\tan(x/2)=t 置換等により計算すると I'(a) = 0 となる。\n" +
-    "よって I(a) は a に依存しない定数関数。\n" +
+    "【着眼点】：積分変数 x 以外のパラメータ a を含む<br>" +
+    "【公式/方針】：I(a) とおき、積分記号下で a について微分<br>" +
+    "【危険】：微分後の三角関数積分の煩雑さ<br>" +
+    "⇒ I'(a) = \\int_0^\\pi \\frac{-2\\cos x + 2a}{1-2a\\cos x+a^2} dx<br>" +
+    "ここで \\tan(x/2)=t 置換等により計算すると I'(a) = 0 となる。<br>" +
+    "よって I(a) は a に依存しない定数関数。<br>" +
     "I(0) = \\int_0^\\pi \\log 1 dx = 0 より、すべてのアブソリュート a < 1 で I(a) = 0。"
   },
   {
@@ -1106,14 +1106,14 @@ const masterData = [
     latexQ: "\\lim_{n \\to \\infty} \\int_0^1 nx^n f(x) \\,dx",
     latexA: "f(1)",
     note:
-    "【着眼点】：nx^n が x=1 付近で鋭いピークを持つ\n" +
-    "【公式/方針】：部分積分で f(1) を外に出し、残りの極限を評価\n" +
-    "【危険】：積分項が 0 に収束することの記述\n" +
-    "⇒ \\int_0^1 \\left( \\frac{n}{n+1}x^{n+1} \\right)' f(x) dx\n" +
-    "   = \\left[ \\frac{n}{n+1}x^{n+1} f(x) \\right]_0^1 - \\int_0^1 \\frac{n}{n+1}x^{n+1} f'(x) dx\n" +
-    "   = \\frac{n}{n+1}f(1) - \\frac{n}{n+1} \\int_0^1 x^{n+1} f'(x) dx\n" +
-    "n→∞ のとき、第1項は f(1) に収束。\n" +
-    "第2項の積分は x^{n+1} が 0 に潰れるため 0 に収束。\n" +
+    "【着眼点】：nx^n が x=1 付近で鋭いピークを持つ<br>" +
+    "【公式/方針】：部分積分で f(1) を外に出し、残りの極限を評価<br>" +
+    "【危険】：積分項が 0 に収束することの記述<br>" +
+    "⇒ \\int_0^1 \\left( \\frac{n}{n+1}x^{n+1} \\right)' f(x) dx<br>" +
+    "   = \\left[ \\frac{n}{n+1}x^{n+1} f(x) \\right]_0^1 - \\int_0^1 \\frac{n}{n+1}x^{n+1} f'(x) dx<br>" +
+    "   = \\frac{n}{n+1}f(1) - \\frac{n}{n+1} \\int_0^1 x^{n+1} f'(x) dx<br>" +
+    "n→∞ のとき、第1項は f(1) に収束。<br>" +
+    "第2項の積分は x^{n+1} が 0 に潰れるため 0 に収束。<br>" +
     "よって極限値は f(1)。"
   },
   {
@@ -1123,12 +1123,12 @@ const masterData = [
     latexQ: "\\int_0^1 \\sqrt[3]{1-x^2} \\,dx + \\int_0^1 \\sqrt{1-x^3} \\,dx",
     latexA: "1",
     note:
-    "【着眼点】：単体では積分不可能なルート和\n" +
-    "【公式/方針】：y=f(x) と x=f^{-1}(y) の関係を図形的に捉える\n" +
-    "【危険】：数式のみでゴリ押ししようとする罠\n" +
-    "⇒ y = \\sqrt[3]{1-x^2} を変形すると x^2 = 1-y^3 \\implies x = \\sqrt{1-y^3}。\n" +
-    "すなわち、2つの積分は互いに逆関数の関係にある。\n" +
-    "グラフを x-y 平面に描くと、[0, 1] 区間で 1×1 の正方形をぴったり埋め尽くす。\n" +
+    "【着眼点】：単体では積分不可能なルート和<br>" +
+    "【公式/方針】：y=f(x) と x=f^{-1}(y) の関係を図形的に捉える<br>" +
+    "【危険】：数式のみでゴリ押ししようとする罠<br>" +
+    "⇒ y = \\sqrt[3]{1-x^2} を変形すると x^2 = 1-y^3 \\implies x = \\sqrt{1-y^3}。<br>" +
+    "すなわち、2つの積分は互いに逆関数の関係にある。<br>" +
+    "グラフを x-y 平面に描くと、[0, 1] 区間で 1×1 の正方形をぴったり埋め尽くす。<br>" +
     "よって面積解釈より合計は 1。"
   }
 ];
