@@ -42,7 +42,7 @@ window.MathJax = {
     gap: 10px;
     background: #fafafa;
     padding: 10px;
-    max-height: 70vh; /* 縦長スクロール対応 */
+    max-height: 75vh;
     overflow-y: auto;
 }
 
@@ -67,6 +67,19 @@ window.MathJax = {
     gap:8px;
 }
 
+/* 問題(Q)エリア専用の上下ずらし（千鳥配置） */
+#math-game #top {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+#math-game #top .card:nth-child(3n+1),
+#math-game #top .card:nth-child(3n+3) {
+    transform: translateY(-12px);
+}
+#math-game #top .card:nth-child(3n+2) {
+    transform: translateY(12px);
+}
+
 #math-game .card {
     width:100%;
     cursor:pointer;
@@ -79,6 +92,7 @@ window.MathJax = {
     padding-bottom:75%; 
 }
 
+/* KeyとAの裏返るカード用 */
 #math-game .inner {
     position:absolute;
     top:0; left:0;
@@ -95,7 +109,7 @@ window.MathJax = {
 }
 
 #math-game .card.flipped {
-    z-index: 5; /* めくったカードを最前面に */
+    z-index: 5;
 }
 
 #math-game .front,
@@ -114,20 +128,44 @@ window.MathJax = {
     border-radius:8px;
 }
 
-/* 前面（裏返る前）のデザイン */
-#math-game #top .front { background:#BBDEFB; color:#0D47A1; }
 #math-game #mid .front { background:#C8E6C9; color:#1B5E20; }
 #math-game #bottom .front { background:#FFE0B2; color:#E65100; }
 
-/* 背面（めくった後）のデザイン */
 #math-game .back {
     background:white;
     transform:rotateY(180deg);
     border: 2px solid #ddd;
+    transform-style:preserve-3d; 
 }
-#math-game #top .back { border-color:#BBDEFB; color:#0D47A1; }
 #math-game #mid .back { border-color:#C8E6C9; color:#1B5E20; }
 #math-game #bottom .back { border-color:#FFE0B2; color:#E65100; }
+
+/* 問題(Q)専用のデザイン（常に表向き） */
+#math-game .q-card-content {
+    position:absolute;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    background:white;
+    border: 2px solid #BBDEFB;
+    color:#0D47A1;
+    border-radius:8px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.15);
+    transition:all 0.2s ease;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:2px;
+}
+
+/* 問題(Q)選択時のハイライト */
+#math-game .card.selected .q-card-content {
+    border: 3px solid #FF9800;
+    background: #FFF3E0;
+    transform: scale(1.05); /* 少し手前に浮き出る */
+    box-shadow: 0 4px 10px rgba(255, 152, 0, 0.4);
+    z-index: 10;
+}
 
 #math-game .math-text {
     font-size: clamp(12px, 3vw, 16px);
@@ -137,7 +175,6 @@ window.MathJax = {
     justify-content: center;
     align-items: center;
     padding: 2px;
-    /* はみ出し対策：カード裏面よりも1px手前に浮かせる */
     transform: translateZ(1px); 
     word-break: break-all;
 }
@@ -195,7 +232,7 @@ window.MathJax = {
 </style>
 
 <div class="header">
-    <div>積分発想特訓のカードめくり (Q-Key-A)</div>
+    <div>積分発想特訓のカードめくり</div>
     <div>Rate: <span id="r-disp">0</span> | ミス: <span id="m">0</span></div>
 </div>
 
@@ -220,7 +257,7 @@ window.MathJax = {
     </div>
 </div>
 
-<!-- 設定モーダル（ゲーム開始時・クリア時） -->
+<!-- 設定モーダル -->
 <div class="modal" id="start-modal" style="display:flex;">
     <div class="modal-content" style="text-align:center;">
         <h3 id="start-title" style="margin-top:0;">ゲームスタート</h3>
@@ -233,7 +270,7 @@ window.MathJax = {
     </div>
 </div>
 
-<!-- 判定モーダル（正解・不正解時） -->
+<!-- 判定モーダル -->
 <div class="modal" id="modal">
     <div class="modal-content">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">
@@ -353,19 +390,16 @@ function getLevelFromRate(r) {
     return 5;
 }
 
-// 指定レベルのデータを取得
 function getDataByLevel(lvl) {
     let filtered = masterData.filter(d => parseInt(d.level.charAt(0)) === lvl);
-    return filtered.length > 0 ? filtered : masterData.filter(d => parseInt(d.level.charAt(0)) === 1); // fallback
+    return filtered.length > 0 ? filtered : masterData.filter(d => parseInt(d.level.charAt(0)) === 1); 
 }
 
-// 配列からランダムにN個抽出
 function pickRandom(arr, n) {
     let shuffled = shuffle([...arr]);
     return shuffled.slice(0, Math.min(n, arr.length));
 }
 
-// カードDOMの生成
 function createCard(d, areaType){
     let c = document.createElement('div');
     c.className = 'card';
@@ -376,21 +410,46 @@ function createCard(d, areaType){
     let i = document.createElement('div');
     i.className = 'inner';
 
+    // 問題(Q)は常に表向きの専用デザイン
+    if (areaType === 'Q') {
+        let qContent = document.createElement('div');
+        qContent.className = 'q-card-content math-text';
+        qContent.innerHTML = `\\( \\displaystyle ${d.latexQ} \\)`;
+        i.appendChild(qContent);
+        wrapper.appendChild(i);
+        c.appendChild(wrapper);
+
+        c.onclick = () => {
+            if(lock || modalOpen || c.classList.contains('matched')) return;
+            
+            // 既に選択中なら解除
+            if (topSel && topSel.c === c) {
+                c.classList.remove('selected');
+                topSel = null;
+                return;
+            }
+            
+            // 他のQが選択されていれば解除して、これを新しく選択
+            c.classList.add('selected');
+            if(topSel) topSel.c.classList.remove('selected');
+            topSel = {c, d};
+
+            checkMatch();
+        };
+        return c;
+    }
+
+    // 方針(Key)と解答(A)は裏返るデザイン
     let f = document.createElement('div');
     f.className = 'front';
-    let fText = areaType === 'Q' ? '問題 (Q)' : (areaType === 'Key' ? '方針 (Key)' : '解答 (A)');
+    let fText = areaType === 'Key' ? '方針 (Key)' : '解答 (A)';
     f.innerHTML = `${fText}<br><span style="font-size:10px; font-weight:normal;">(Tap)</span>`;
 
     let b = document.createElement('div');
-    b.className = 'back math-text'; 
+    b.className = 'back'; 
     
-    // 中身のコンテンツ
-    let contentHtml = '';
-    if (areaType === 'Q') contentHtml = `\\( \\displaystyle ${d.latexQ} \\)`;
-    else if (areaType === 'Key') contentHtml = `<span style="font-size:0.9em; font-weight:bold;">${d.key}</span>`;
-    else contentHtml = `\\( \\displaystyle ${d.latexA} \\)`;
-    
-    b.innerHTML = `<div>${contentHtml}</div>`;
+    let contentHtml = areaType === 'Key' ? `<span style="font-size:0.9em; font-weight:bold;">${d.key}</span>` : `\\( \\displaystyle ${d.latexA} \\)`;
+    b.innerHTML = `<div class="math-text">${contentHtml}</div>`;
 
     i.appendChild(f);
     i.appendChild(b);
@@ -400,55 +459,61 @@ function createCard(d, areaType){
     c.onclick = () => {
         if(lock || modalOpen || c.classList.contains('matched')) return;
 
-        // すでに開いているカードをタップしたら閉じる
-        if (areaType === 'Q' && topSel && topSel.c === c) { c.classList.remove('flipped'); topSel = null; return; }
-        if (areaType === 'Key' && midSel && midSel.c === c) { c.classList.remove('flipped'); midSel = null; return; }
-        if (areaType === 'A' && botSel && botSel.c === c) { c.classList.remove('flipped'); botSel = null; return; }
-
-        c.classList.add('flipped');
-
-        // 各エリア1枚のみ保持
-        if(areaType === 'Q') { if(topSel) topSel.c.classList.remove('flipped'); topSel = {c, d}; }
-        else if(areaType === 'Key') { if(midSel) midSel.c.classList.remove('flipped'); midSel = {c, d}; }
-        else { if(botSel) botSel.c.classList.remove('flipped'); botSel = {c, d}; }
-
-        // 3枚揃った時の判定ロジック
-        if(topSel && midSel && botSel) {
-            lock = true;
-            setTimeout(() => {
-                let isMatch = (topSel.d.id === midSel.d.id) && (midSel.d.id === botSel.d.id);
-                let dTarget = topSel.d;
-
-                let modalBody = 
-                    `<div style="font-size:1.1em; margin:10px 0; padding:10px; border:2px solid #2196F3; border-radius:8px; text-align:center;">`+
-                    `\\( \\displaystyle ${dTarget.latexQ} = ${dTarget.latexA} \\)</div>`+
-                    `<div style="font-size:0.95em; text-align:left; background:#f4f4f4; padding:15px; border-radius:6px; line-height:1.6;">`+
-                    `<strong style="color:#0D47A1;">【方針】 ${dTarget.key}</strong><hr style="margin:8px 0; border:none; border-top:1px dashed #ccc;">`+
-                    `${dTarget.note}</div>`;
-
-                if(isMatch) {
-                    show('正解！', modalBody, () => {
-                        topSel.c.classList.add('matched');
-                        midSel.c.classList.add('matched');
-                        botSel.c.classList.add('matched');
-                        match++;
-                        resetSelection();
-                        if(match === currentPairCount) end();
-                    });
-                } else {
-                    miss++;
-                    document.getElementById('m').textContent = miss;
-                    show('ちがうよ', modalBody, () => {
-                        topSel.c.classList.remove('flipped');
-                        midSel.c.classList.remove('flipped');
-                        botSel.c.classList.remove('flipped');
-                        resetSelection();
-                    });
-                }
-            }, 600);
+        if (areaType === 'Key') {
+            if (midSel && midSel.c === c) { c.classList.remove('flipped'); midSel = null; return; }
+            c.classList.add('flipped');
+            if(midSel) midSel.c.classList.remove('flipped');
+            midSel = {c, d};
+        } else {
+            if (botSel && botSel.c === c) { c.classList.remove('flipped'); botSel = null; return; }
+            c.classList.add('flipped');
+            if(botSel) botSel.c.classList.remove('flipped');
+            botSel = {c, d};
         }
+
+        checkMatch();
     };
+
     return c;
+}
+
+function checkMatch() {
+    if(topSel && midSel && botSel) {
+        lock = true;
+        setTimeout(() => {
+            let isMatch = (topSel.d.id === midSel.d.id) && (midSel.d.id === botSel.d.id);
+            let dTarget = topSel.d;
+
+            let modalBody = 
+                `<div style="font-size:1.1em; margin:10px 0; padding:10px; border:2px solid #2196F3; border-radius:8px; text-align:center;">`+
+                `\\( \\displaystyle ${dTarget.latexQ} = ${dTarget.latexA} \\)</div>`+
+                `<div style="font-size:0.95em; text-align:left; background:#f4f4f4; padding:15px; border-radius:6px; line-height:1.6;">`+
+                `<strong style="color:#0D47A1;">【方針】 ${dTarget.key}</strong><hr style="margin:8px 0; border:none; border-top:1px dashed #ccc;">`+
+                `${dTarget.note}</div>`;
+
+            if(isMatch) {
+                show('正解！', modalBody, () => {
+                    topSel.c.classList.add('matched');
+                    midSel.c.classList.add('matched');
+                    botSel.c.classList.add('matched');
+                    match++;
+                    resetSelection();
+                    if(match === currentPairCount) end();
+                });
+            } else {
+                miss++;
+                document.getElementById('m').textContent = miss;
+                show('ちがうよ', modalBody, () => {
+                    // Q(上段)は裏返さず、選択枠だけ外す
+                    topSel.c.classList.remove('selected');
+                    // Key, Aは裏返す
+                    midSel.c.classList.remove('flipped');
+                    botSel.c.classList.remove('flipped');
+                    resetSelection();
+                });
+            }
+        }, 600);
+    }
 }
 
 function resetSelection() { topSel = null; midSel = null; botSel = null; lock = false; }
@@ -497,13 +562,11 @@ function setupGame() {
     let lvl = getLevelFromRate(currentRate);
     let gameData = [];
 
-    // レートに基づくスモールステップ抽出ロジック
     if (currentPairCount === 6) {
         let lCur = getDataByLevel(lvl);
         let lUp = getDataByLevel(Math.min(5, lvl + 1));
         let lDown = getDataByLevel(Math.max(1, lvl - 1));
         
-        // lvl5の場合、上レベルがないので自身から補充
         let pUp = pickRandom(lvl === 5 ? lCur : lUp, 2); 
         let pDown = pickRandom(lvl === 1 ? lCur : lDown, 1);
         let pCur = pickRandom(lCur, 3);
