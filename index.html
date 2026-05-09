@@ -3,11 +3,18 @@
 <script>
 window.MathJax = {
   tex: {
-    inlineMath: [['\\(', '\\)']],
+    inlineMath: [
+      ['$', '$'],
+      ['\\(', '\\)']
+    ],
     displayMath: [['\\[', '\\]']]
+  },
+  startup: {
+    typeset: false
   }
 };
 </script>
+
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 <style>
@@ -455,7 +462,8 @@ function resetSelection() { topSel = null; midSel = null; botSel = null; lock = 
 
 function show(title, body, cb) {
     modalOpen = true; mt.textContent = title; txt.innerHTML = body; modal.style.display = 'flex';
-    renderMath([txt]); // 改良点：モーダルの中身だけを確実に再レンダリング
+    MathJax.typesetClear([txt]); //　追加；一度掃除してから再 typeset するのが安全
+    renderMath([txt]);// 改良点：モーダルの中身だけを確実に再レンダリング
     btn.onclick = () => { modal.style.display = 'none'; modalOpen = false; cb(); };
 }
 
