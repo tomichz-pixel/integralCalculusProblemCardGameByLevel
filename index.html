@@ -1,0 +1,548 @@
+<div id="math-game" style="width:100%; max-width:900px; margin:auto; font-family:sans-serif; position: relative;">
+
+<!-- MathJaxの読み込み -->
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['\\(', '\\)']],
+    displayMath: [['\\[', '\\]']]
+  }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+#math-game * { box-sizing:border-box; user-select:none; }
+
+#math-game .header {
+    height:48px;
+    background:#333;
+    color:#fff;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 12px;
+    font-size:14px;
+}
+
+#math-game .controls {
+    background: #f4f4f4;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    font-size: 14px;
+    border-bottom: 2px solid #ddd;
+}
+
+#math-game .board {
+    display:flex;
+    flex-direction:column;
+    gap: 10px;
+    background: #fafafa;
+    padding: 10px;
+    max-height: 70vh; /* 縦長スクロール対応 */
+    overflow-y: auto;
+}
+
+#math-game .area-wrapper {
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+#math-game .area-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+#math-game .area {
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:8px;
+}
+
+#math-game .card {
+    width:100%;
+    cursor:pointer;
+    perspective: 1000px; /* 3D反転の奥行き */
+}
+
+#math-game .card-inner-wrapper {
+    position:relative;
+    width:100%;
+    padding-bottom:75%; 
+}
+
+#math-game .inner {
+    position:absolute;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    transform-style:preserve-3d;
+    transition:transform 0.3s cubic-bezier(0.4, 0.2, 0.2, 1);
+    border-radius:8px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.15);
+}
+
+#math-game .card.flipped .inner {
+    transform:rotateY(180deg);
+}
+
+#math-game .card.flipped {
+    z-index: 5; /* めくったカードを最前面に */
+}
+
+#math-game .front,
+#math-game .back {
+    position:absolute;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:4px;
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+    border-radius:8px;
+}
+
+/* 前面（裏返る前）のデザイン */
+#math-game #top .front { background:#BBDEFB; color:#0D47A1; }
+#math-game #mid .front { background:#C8E6C9; color:#1B5E20; }
+#math-game #bottom .front { background:#FFE0B2; color:#E65100; }
+
+/* 背面（めくった後）のデザイン */
+#math-game .back {
+    background:white;
+    transform:rotateY(180deg);
+    border: 2px solid #ddd;
+}
+#math-game #top .back { border-color:#BBDEFB; color:#0D47A1; }
+#math-game #mid .back { border-color:#C8E6C9; color:#1B5E20; }
+#math-game #bottom .back { border-color:#FFE0B2; color:#E65100; }
+
+#math-game .math-text {
+    font-size: clamp(12px, 3vw, 16px);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2px;
+    /* はみ出し対策：カード裏面よりも1px手前に浮かせる */
+    transform: translateZ(1px); 
+    word-break: break-all;
+}
+
+#math-game .matched {
+    opacity:0;
+    transform:scale(0);
+    transition:0.3s;
+    pointer-events: none;
+}
+
+/* モーダル群 */
+#math-game .modal {
+    display:none;
+    position:absolute;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.6);
+    justify-content:center;
+    align-items:center; 
+    z-index: 20;
+}
+
+#math-game .modal-content {
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    width:90%;
+    max-width:420px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#math-game #txt {
+    overflow-y: auto;
+    padding: 5px;
+    text-align: left;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+#math-game .btn-primary {
+    background: #2196F3;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+}
+</style>
+
+<div class="header">
+    <div>定積分めくり (Q-Key-A)</div>
+    <div>Rate: <span id="r-disp">0</span> | ミス: <span id="m">0</span></div>
+</div>
+
+<div class="controls">
+    <label><input type="radio" name="pairCount" value="3"> 3組</label>
+    <label><input type="radio" name="pairCount" value="6" checked> 6組</label>
+    <button id="reset-btn" class="btn-primary" style="background:#f44336;">リタイア</button>
+</div>
+
+<div class="board">
+    <div class="area-wrapper">
+        <div class="area-title">【問題】(Q)</div>
+        <div class="area" id="top"></div>
+    </div>
+    <div class="area-wrapper">
+        <div class="area-title">【方針】(Key)</div>
+        <div class="area" id="mid"></div>
+    </div>
+    <div class="area-wrapper">
+        <div class="area-title">【解答】(A)</div>
+        <div class="area" id="bottom"></div>
+    </div>
+</div>
+
+<!-- 設定モーダル（ゲーム開始時・クリア時） -->
+<div class="modal" id="start-modal" style="display:flex;">
+    <div class="modal-content" style="text-align:center;">
+        <h3 id="start-title" style="margin-top:0;">ゲームスタート</h3>
+        <p id="start-msg">現在のレートを入力してください。<br>レートに応じて問題レベルが変動します。</p>
+        <div style="margin: 15px 0;">
+            <label style="font-weight:bold; font-size:18px;">Rate: </label>
+            <input type="number" id="input-rate" value="0" min="0" style="font-size:18px; width:80px; text-align:center; padding:4px;">
+        </div>
+        <button id="start-btn" class="btn-primary" style="font-size:16px; padding:10px;">挑戦する</button>
+    </div>
+</div>
+
+<!-- 判定モーダル（正解・不正解時） -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">
+            <h3 id="mt" style="margin: 0; color: #333; font-size: 1.2em;"></h3>
+            <button id="btn" class="btn-primary" style="background:#FF9800; border-radius:20px;">次へ ＞</button>
+        </div>
+        <div id="txt"></div>
+    </div>
+</div>
+
+<script>
+(function(){
+
+const masterData = [
+  // ==========================================
+  // レベル1: 教科書レベル
+  // ==========================================
+  { id: "L1_01", level: "1_教科書レベル", key: "基本公式：xのn乗の積分 (n≠-1)", latexQ: "\\int x^n \\,dx", latexA: "\\frac{1}{n+1}x^{n+1} + C", note: "公式： $\\int x^n dx = \\frac{x^{n+1}}{n+1} + C$<br>$\\implies$ 微分して $x^n$ になる関数を逆算します" },
+  { id: "L1_02", level: "1_教科書レベル", key: "基本公式：1/x の積分 (対数積分)", latexQ: "\\int \\frac{1}{x} \\,dx", latexA: "\\log |x| + C", note: "公式： $\\int \\frac{1}{x} dx = \\log |x| + C$<br>$\\implies$ 真数条件のため絶対値をつけるのが鉄則です" },
+  { id: "L1_03", level: "1_教科書レベル", key: "指数関数：自然対数の底 e の積分", latexQ: "\\int e^x \\,dx", latexA: "e^x + C", note: "公式： $\\int e^x dx = e^x + C$<br>$\\implies$ $e^x$ は微分しても積分しても形が変わりません" },
+  { id: "L1_04", level: "1_教科書レベル", key: "指数関数：底が e 以外の積分", latexQ: "\\int a^x \\,dx \\quad (a > 0, a \\neq 1)", latexA: "\\frac{a^x}{\\log a} + C", note: "公式： $\\int a^x dx = \\frac{a^x}{\\log a} + C$<br>$\\implies$ $(a^x)' = a^x \\log a$ なので $\\log a$ で割って調整します" },
+  { id: "L1_05", level: "1_教科書レベル", key: "三角関数：sin x の積分", latexQ: "\\int \\sin x \\,dx", latexA: "-\\cos x + C", note: "公式： $\\int \\sin x dx = -\\cos x + C$<br>$\\implies$ $(\\cos x)' = -\\sin x$ より符号が反転することに注意します" },
+  { id: "L1_06", level: "1_教科書レベル", key: "三角関数：cos x の積分", latexQ: "\\int \\cos x \\,dx", latexA: "\\sin x + C", note: "公式： $\\int \\cos x dx = \\sin x + C$<br>$\\implies$ $(\\sin x)' = \\cos x$ の逆演算です" },
+  { id: "L1_07", level: "1_教科書レベル", key: "置換積分：1次式の累乗の積分", latexQ: "\\int (ax+b)^n \\,dx \\quad (n \\neq -1)", latexA: "\\frac{1}{a(n+1)}(ax+b)^{n+1} + C", note: "$\\int f(ax+b)dx = \\frac{1}{a}F(ax+b) + C$<br>$\\implies$ 合成関数の微分の逆で、係数 $a$ で割ります" },
+  // ==========================================
+  // レベル2: 難関大入試基礎レベル
+  // ==========================================
+  { id: "L2_01", level: "2_難関大入試基礎レベル", key: "面積公式：放物線と直線の交点 (1/6公式)", latexQ: "\\int_\\alpha^\\beta (x-\\alpha)(x-\\beta) \\,dx", latexA: "-\\frac{1}{6}(\\beta-\\alpha)^3", note: "$\\int_\\alpha^\\beta (x-\\alpha)(x-\\beta) dx = -\\frac{(\\beta-\\alpha)^3}{6}$<br>$\\implies$ 放物線と直線が囲む面積を瞬時に出す必須公式です" },
+  { id: "L2_02", level: "2_難関大入試基礎レベル", key: "面積公式：3次関数と接線 (1/12公式)", latexQ: "\\int_\\alpha^\\beta (x-\\alpha)(x-\\beta)^2 \\,dx", latexA: "\\frac{1}{12}(\\beta-\\alpha)^4", note: "中身を $(x-\\beta)+(\\beta-\\alpha)$ に分割して展開します<br>$\\implies \\frac{(\\beta-\\alpha)^4}{3} - \\frac{(\\beta-\\alpha)^4}{4} = \\frac{(\\beta-\\alpha)^4}{12}$" },
+  { id: "L2_03", level: "2_難関大入試基礎レベル", key: "面積公式：放物線と接線 (1/3公式)", latexQ: "\\int_\\alpha^\\beta (x-\\alpha)^2 \\,dx", latexA: "\\frac{1}{3}(\\beta-\\alpha)^3", note: "$x-\\alpha = t$ と置換するか、そのまま積分します<br>$\\implies [\\frac{1}{3}(x-\\alpha)^3]_\\alpha^\\beta = \\frac{1}{3}(\\beta-\\alpha)^3$" },
+  { id: "L2_04", level: "2_難関大入試基礎レベル", key: "定積分の基本：絶対値を含む関数", latexQ: "\\int_0^2 |x^2-x| \\,dx", latexA: "1", note: "$x^2-x=0$ となる $x=1$ で符号が変わります<br>$\\implies \\int_0^1 -(x^2-x)dx + \\int_1^2 (x^2-x)dx = 1$" },
+  { id: "L2_05", level: "2_難関大入試基礎レベル", key: "対称性：奇関数の定積分", latexQ: "\\int_{-a}^{a} f(x) \\,dx \\quad (f(-x)=-f(x))", latexA: "0", note: "奇関数（原点対称）は区間 $[-a, a]$ で相殺されます<br>$\\implies \\int_{-a}^0 f(x) dx + \\int_0^a f(x) dx = 0$" },
+  { id: "L2_06", level: "2_難関大入試基礎レベル", key: "対称性：偶関数の定積分", latexQ: "\\int_{-a}^{a} f(x) \\,dx \\quad (f(-x)=f(x))", latexA: "2\\int_{0}^{a} f(x) \\,dx", note: "偶関数（y軸対称）は左右の面積が等しくなります<br>$\\implies 2 \\times \\int_0^a f(x) dx$ として計算を簡略化します" },
+  { id: "L2_07", level: "2_難関大入試基礎レベル", key: "図形的直観：三角関数の周期性", latexQ: "\\int_0^{2\\pi} \\sin(nx) \\,dx", latexA: "0", note: "サインカーブの1周期分の定積分です<br>$\\implies$ $x$軸の上下で面積が完全に相殺されるため0になります" },
+  { id: "L2_08", level: "2_難関大入試基礎レベル", key: "図形的直観：サインカーブの半波長", latexQ: "\\int_0^\\pi \\sin x \\,dx", latexA: "2", note: "サインカーブの「ひと山」の面積です<br>$\\implies [-\\cos x]_0^\\pi = -(-1) - (-1) = 2$" },
+  { id: "L2_09", level: "2_難関大入試基礎レベル", key: "図形的処理：四分円の面積", latexQ: "\\int_0^1 \\sqrt{1-x^2} \\,dx", latexA: "\\frac{\\pi}{4}", note: "$y = \\sqrt{1-x^2}$ は半径1の円の上半分です<br>$\\implies$ 区間 $[0, 1]$ は四半円の面積なので $\\frac{1}{4} \\cdot \\pi \\cdot 1^2$" },
+  { id: "L2_10", level: "2_難関大入試基礎レベル", key: "特殊置換：1/(1+x^2) の定積分", latexQ: "\\int_0^1 \\frac{1}{1+x^2} \\,dx", latexA: "\\frac{\\pi}{4}", note: "$x = \\tan\\theta$ と置換する典型問題です<br>$\\implies \\int_0^{\\pi/4} \\frac{1}{1+\\tan^2\\theta} \\cdot \\frac{1}{\\cos^2\\theta} d\\theta = \\int_0^{\\pi/4} 1 d\\theta$" },
+  { id: "L2_11", level: "2_難関大入試基礎レベル", key: "漸化式：ウォリス積分の基本 (3乗)", latexQ: "\\int_0^{\\frac{\\pi}{2}} \\sin^3 x \\,dx", latexA: "\\frac{2}{3}", note: "奇数乗のウォリス積分公式を適用します<br>$\\implies \\frac{2}{3} \\cdot 1 = \\frac{2}{3}$ （$\\cos$ でも同値です）" },
+  { id: "L2_12", level: "2_難関大入試基礎レベル", key: "万能の対称性：King Property", latexQ: "\\int_0^{\\frac{\\pi}{2}} \\frac{\\sin x}{\\sin x + \\cos x} \\,dx", latexA: "\\frac{\\pi}{4}", note: "$x = \\frac{\\pi}{2}-t \\implies I = \\int_0^{\\pi/2} \\frac{\\cos t}{\\cos t + \\sin t} dt$<br>$\\implies 2I = \\int_0^{\\pi/2} 1 dx = \\frac{\\pi}{2}$" },
+  { id: "L2_13", level: "2_難関大入試基礎レベル", key: "広義積分：ガンマ関数の基礎", latexQ: "\\int_0^\\infty e^{-x} \\,dx", latexA: "1", note: "上限 $t \\to \\infty$ の極限を計算します<br>$\\implies \\lim_{t \\to \\infty} [-e^{-x}]_0^t = \\lim_{t \\to \\infty} (-e^{-t} + 1) = 1$" },
+  { id: "L2_14", level: "2_難関大入試基礎レベル", key: "部分積分：多項式と指数関数", latexQ: "\\int x e^x \\,dx", latexA: "(x-1)e^x + C", note: "$x$ を微分側、$e^x$ を積分側に設定して部分積分します<br>$\\implies x e^x - \\int 1 \\cdot e^x dx = (x-1)e^x$" },
+  { id: "L2_15", level: "2_難関大入試基礎レベル", key: "部分積分：対数関数の積分", latexQ: "\\int \\log x \\,dx", latexA: "x \\log x - x + C", note: "$1 \\times \\log x$ と見て部分積分を実行します<br>$\\implies x \\log x - \\int x \\cdot \\frac{1}{x} dx = x \\log x - x$" },
+  // ==========================================
+  // レベル3: 国公立大学標準レベル
+  // ==========================================
+  { id: "L3_01", level: "3_国公立大学標準レベル", key: "有理関数の積分：部分分数分解", latexQ: "\\int \\frac{1}{x^2-1} \\,dx", latexA: "\\frac{1}{2} \\log \\left| \\frac{x-1}{x+1} \\right| + C", note: "$\\frac{1}{x^2-1} = \\frac{1}{2}(\\frac{1}{x-1} - \\frac{1}{x+1})$ へ分解<br>$\\implies \\frac{1}{2} \\int (\\frac{1}{x-1} - \\frac{1}{x+1}) dx$" },
+  { id: "L3_02", level: "3_国公立大学標準レベル", key: "対数積分：分子が分母の微分型", latexQ: "\\int \\frac{x}{x^2+1} \\,dx", latexA: "\\frac{1}{2} \\log (x^2+1) + C", note: "分子を分母の微分 $(x^2+1)' = 2x$ に合わせる<br>$\\implies \\frac{1}{2} \\int \\frac{(x^2+1)'}{x^2+1} dx = \\frac{1}{2} \\log(x^2+1)$" },
+  { id: "L3_03", level: "3_国公立大学標準レベル", key: "次数下げ：三角関数の2乗", latexQ: "\\int \\sin^2 x \\,dx", latexA: "\\frac{x}{2} - \\frac{\\sin 2x}{4} + C", note: "半角の公式： $\\sin^2 x = \\frac{1-\\cos 2x}{2}$ を利用<br>$\\implies \\int (\\frac{1}{2} - \\frac{\\cos 2x}{2}) dx = \\frac{1}{2}x - \\frac{1}{4}\\sin 2x$" },
+  { id: "L3_04", level: "3_国公立大学標準レベル", key: "三角関数の積：積和の公式", latexQ: "\\int \\sin 3x \\cos x \\,dx", latexA: "-\\frac{\\cos 4x}{8} - \\frac{\\cos 2x}{4} + C", note: "積和の公式： $\\sin\\alpha \\cos\\beta = \\frac{1}{2}(\\sin(\\alpha+\\beta) + \\sin(\\alpha-\\beta))$<br>$\\implies \\frac{1}{2} \\int (\\sin 4x + \\sin 2x) dx$" },
+  { id: "L3_05", level: "3_国公立大学標準レベル", key: "置換積分：無理関数を含む定積分", latexQ: "\\int_0^1 x\\sqrt{1-x} \\,dx", latexA: "\\frac{4}{15}", note: "$1-x = t$ とおく $\\implies x = 1-t, dx = -dt$<br>$\\implies \\int_1^0 (1-t)\\sqrt{t} (-dt) = \\int_0^1 (t^{1/2} - t^{3/2}) dt$" },
+  { id: "L3_06", level: "3_国公立大学標準レベル", key: "部分積分：多項式(2次)と指数関数", latexQ: "\\int x^2 e^x \\,dx", latexA: "(x^2 - 2x + 2)e^x + C", note: "$x^2 e^x - \\int 2x e^x dx$ と1回目の部分積分<br>$\\implies x^2 e^x - 2((x-1)e^x)$ と2回目を実行して整理" },
+  { id: "L3_07", level: "3_国公立大学標準レベル", key: "無理関数の積分：分母の有理化", latexQ: "\\int \\frac{1}{\\sqrt{x+1}+\\sqrt{x}} \\,dx", latexA: "\\frac{2}{3}(x+1)^{\\frac{3}{2}} - \\frac{2}{3}x^{\\frac{3}{2}} + C", note: "分母分子に $(\\sqrt{x+1}-\\sqrt{x})$ を掛ける<br>$\\implies \\int \\frac{\\sqrt{x+1}-\\sqrt{x}}{(x+1)-x} dx = \\int (x+1)^{1/2} - x^{1/2} dx$" },
+  { id: "L3_08", level: "3_国公立大学標準レベル", key: "三角関数の積分：奇数乗の処理", latexQ: "\\int \\cos^3 x \\,dx", latexA: "\\sin x - \\frac{\\sin^3 x}{3} + C", note: "$\\cos^3 x = \\cos x(1-\\sin^2 x)$ と変形<br>$\\implies \\sin x = t$ とおき $\\int (1-t^2) dt$ を計算" },
+  { id: "L3_09", level: "3_国公立大学標準レベル", key: "部分積分：同形出現 (ループ型)", latexQ: "\\int e^x \\sin x \\,dx", latexA: "\\frac{1}{2} e^x (\\sin x - \\cos x) + C", note: "$I = e^x \\sin x - \\int e^x \\cos x dx$<br>$\\implies I = e^x \\sin x - (e^x \\cos x + I) \\implies 2I = e^x(\\sin x - \\cos x)$" },
+  { id: "L3_10", level: "3_国公立大学標準レベル", key: "置換積分：対数関数の微分接触型", latexQ: "\\int \\frac{\\log x}{x} \\,dx", latexA: "\\frac{1}{2} (\\log x)^2 + C", note: "$\\int (\\log x) \\cdot (\\log x)' dx$ と見る<br>$\\implies \\log x = t$ とおくと $\\int t dt = \\frac{1}{2}t^2 + C$" },
+  { id: "L3_11", level: "3_国公立大学標準レベル", key: "三角関数の積分：tan x の対数積分", latexQ: "\\int \\tan x \\,dx", latexA: "-\\log |\\cos x| + C", note: "$\\int \\frac{\\sin x}{\\cos x} dx = - \\int \\frac{(\\cos x)'}{\\cos x} dx$ と変形<br>$\\implies -\\log |\\cos x| + C$" },
+  { id: "L3_12", level: "3_国公立大学標準レベル", key: "積分方程式：定数項を k と置く解法", latexQ: "f(x) = x + \\int_0^{1/2} f(t) \\,dt", latexA: "f(x) = x + \\frac{1}{4}", note: "$\\int_0^{1/2} f(t)dt = k$ とおくと $f(x)=x+k$<br>$\\implies k = \\int_0^{1/2} (t+k)dt = [\\frac{1}{2}t^2+kt]_0^{1/2} = \\frac{1}{8} + \\frac{1}{2}k \\implies k=\\frac{1}{4}$" },
+  { id: "L3_13", level: "3_国公立大学標準レベル", key: "微積分学の基本定理：xの微分", latexQ: "\\frac{d}{dx} \\int_a^x f(t) \\,dt", latexA: "f(x)", note: "$\\int_a^x f(t) dt = [F(t)]_a^x = F(x) - F(a)$<br>$\\implies \\frac{d}{dx}(F(x) - F(a)) = F'(x) = f(x)$" },
+  // ==========================================
+  // レベル4: 難関大標準レベル
+  // ==========================================
+  { id: "L4_01", level: "4_難関大標準レベル", key: "指数関数と微分の和：e^x{f(x)+f'(x)} 型", latexQ: "\\int e^x (\\sin x + \\cos x) \\,dx", latexA: "e^x \\sin x + C", note: "積の微分の逆： $(e^x f(x))' = e^x f(x) + e^x f'(x)$ を利用<br>$\\implies \\int e^x (\\sin x + (\\sin x)') dx = e^x \\sin x$" },
+  { id: "L4_02", level: "4_難関大標準レベル", key: "特殊置換：1/√(x^2+A) の積分", latexQ: "\\int \\frac{1}{\\sqrt{x^2+A}} \\,dx", latexA: "\\log |x + \\sqrt{x^2+A}| + C", note: "$t = x + \\sqrt{x^2+A}$ と置く超有名置換<br>$\\implies dt = \\frac{t}{\\sqrt{x^2+A}}dx \\implies \\int \\frac{1}{t} dt$" },
+  { id: "L4_03", level: "4_難関大標準レベル", key: "三角関数の有理式：1/cos x の積分", latexQ: "\\int \\frac{1}{\\cos x} \\,dx", latexA: "\\frac{1}{2} \\log \\left| \\frac{1+\\sin x}{1-\\sin x} \\right| + C", note: "分母分子に $\\cos x$ を掛けて $\\sin x = t$ 置換<br>$\\implies \\int \\frac{1}{1-t^2} dt = \\frac{1}{2} \\int (\\frac{1}{1-t} + \\frac{1}{1+t}) dt$" },
+  { id: "L4_04", level: "4_難関大標準レベル", key: "対称性の利用：x f(sin x) 型", latexQ: "\\int_0^\\pi x \\sin x \\,dx", latexA: "\\pi", note: "$x = \\pi-t$ 置換により $I = \\int_0^\\pi (\\pi-t)\\sin t dt$<br>$\\implies 2I = \\pi \\int_0^\\pi \\sin x dx = 2\\pi$" },
+  { id: "L4_05", level: "4_難関大標準レベル", key: "指数関数の分数積分", latexQ: "\\int \\frac{1}{1+e^x} \\,dx", latexA: "x - \\log (1+e^x) + C", note: "分子を $(1+e^x) - e^x$ と変形する<br>$\\implies \\int (1 - \\frac{e^x}{1+e^x}) dx = x - \\log(1+e^x)$" },
+  { id: "L4_06", level: "4_難関大標準レベル", key: "図形的処理：円の面積 (置換積分)", latexQ: "\\int_0^a \\sqrt{a^2-x^2} \\,dx", latexA: "\\frac{\\pi a^2}{4}", note: "$x = a \\sin \\theta$ と置換 $\\implies dx = a \\cos \\theta d\\theta$<br>$\\implies \\int_0^{\\pi/2} a^2 \\cos^2 \\theta d\\theta$" },
+  { id: "L4_07", level: "4_難関大標準レベル", key: "部分積分と特殊積分：log(x^2+1)", latexQ: "\\int \\log(x^2+1) \\,dx", latexA: "x \\log(x^2+1) - 2x + 2\\arctan x + C", note: "$1 \\times \\log(\\dots)$ と見て部分積分 $\\implies x\\log(x^2+1) - \\int \\frac{2x^2}{x^2+1} dx$<br>$\\implies \\int (2 - \\frac{2}{x^2+1}) dx$ と分離" },
+  { id: "L4_11", level: "4_難関大標準レベル", key: "積分の漸化式：tanのn乗", latexQ: "I_n = \\int_0^{\\frac{\\pi}{4}} \\tan^n x \\,dx \\text{ に対する } I_n + I_{n-2}", latexA: "\\frac{1}{n-1}", note: "$\\tan^n x + \\tan^{n-2} x = \\tan^{n-2} x (\\tan^2 x + 1)$<br>$\\implies \\int_0^{\\pi/4} \\tan^{n-2} x \\cdot \\frac{1}{\\cos^2 x} dx$" },
+  { id: "L4_12", level: "4_難関大標準レベル", key: "和の極限：区分求積法", latexQ: "\\lim_{n \\to \\infty} \\frac{1}{n} \\sum_{k=1}^n \\sin \\left( \\frac{k\\pi}{n} \\right)", latexA: "\\frac{2}{\\pi}", note: "$\\int_0^1 \\sin(\\pi x) dx$ へ変換 $\\implies [-\\frac{1}{\\pi}\\cos(\\pi x)]_0^1 = \\frac{2}{\\pi}$" },
+  { id: "L4_13", level: "4_難関大標準レベル", key: "定積分の不等式評価", latexQ: "0 \\le x \\le 1 \\text{ における } \\int_0^1 e^{-x^2} \\,dx \\text{ の下限}", latexA: "1 - \\frac{1}{e}", note: "$0 \\le x \\le 1$ で $x^2 \\le x$ より $e^{-x^2} \\ge e^{-x}$<br>$\\implies \\int_0^1 e^{-x^2} dx \\ge \\int_0^1 e^{-x} dx = 1 - 1/e$" },
+  // ==========================================
+  // レベル5: 超絶技巧レベル
+  // ==========================================
+  { id: "L5_01", level: "5_超絶技巧レベル", key: "1998年東大後期：King Property", latexQ: "\\int_0^{\\frac{\\pi}{4}} \\log(1+\\tan x) \\,dx", latexA: "\\frac{\\pi}{8} \\log 2", note: "$x = \\frac{\\pi}{4}-t$ と置く $\\implies 1+\\tan(\\frac{\\pi}{4}-t) = \\frac{2}{1+\\tan t}$<br>$\\implies I = \\int_0^{\\pi/4} (\\log 2 - \\log(1+\\tan t)) dt$" },
+  { id: "L5_02", level: "5_超絶技巧レベル", key: "対称性の極致：分母分子の相殺", latexQ: "\\int_0^{\\frac{\\pi}{2}} \\frac{\\sqrt{\\sin x}}{\\sqrt{\\sin x}+\\sqrt{\\cos x}} \\,dx", latexA: "\\frac{\\pi}{4}", note: "$x = \\frac{\\pi}{2}-t$ 置換で分子が $\\sqrt{\\cos t}$ に変化<br>$\\implies 2I = \\int_0^{\\pi/2} 1 dx = \\frac{\\pi}{2}$" },
+  { id: "L5_03", level: "5_超絶技巧レベル", key: "歴史的難問：オイラーの対数正弦積分", latexQ: "\\int_0^{\\frac{\\pi}{2}} \\log(\\sin x) \\,dx", latexA: "-\\frac{\\pi}{2} \\log 2", note: "$2I = \\int_0^{\\pi/2} \\log(\\frac{\\sin 2x}{2}) dx$<br>$\\implies 2I = \\frac{1}{2}\\int_0^\\pi \\log(\\sin u) du - \\frac{\\pi}{2}\\log 2 = I - \\frac{\\pi}{2}\\log 2$" },
+  { id: "L5_04", level: "5_超絶技巧レベル", key: "ファインマンの積分技法", latexQ: "\\int_0^1 \\frac{x^b - x^a}{\\log x} \\,dx", latexA: "\\log\\left(\\frac{b+1}{a+1}\\right)", note: "$\\frac{x^b-x^a}{\\log x} = \\int_a^b x^y dy$ と見て重積分へ変換<br>$\\implies \\int_a^b (\\int_0^1 x^y dx) dy = \\int_a^b \\frac{1}{y+1} dy$" },
+  { id: "L5_05", level: "5_超絶技巧レベル", key: "万能置換：ワイエルシュトラス置換", latexQ: "\\int \\frac{1}{2 + \\cos x} \\,dx", latexA: "\\frac{2}{\\sqrt{3}} \\arctan\\left(\\frac{\\tan(x/2)}{\\sqrt{3}}\\right) + C", note: "$t = \\tan(x/2)$ 置換 $\\implies \\cos x = \\frac{1-t^2}{1+t^2}, dx = \\frac{2dt}{1+t^2}$<br>$\\implies \\int \\frac{2}{t^2+3} dt$" },
+  { id: "L5_07", level: "5_超絶技巧レベル", key: "ディリクレ積分 (Sinc関数)", latexQ: "\\int_0^{\\infty} \\frac{\\sin x}{x} \\,dx", latexA: "\\frac{\\pi}{2}", note: "$\\frac{1}{x} = \\int_0^\\infty e^{-xy} dy$ を用いた二重積分<br>$\\implies \\int_0^\\infty (\\int_0^\\infty e^{-xy} \\sin x dx) dy = [\\arctan y]_0^\\infty$" },
+  { id: "L5_08", level: "5_超絶技巧レベル", key: "パラメータ微分法：ポアソンの積分", latexQ: "\\int_0^{\\pi} \\log(1-2a\\cos x + a^2) \\,dx \\quad (|a| < 1)", latexA: "0", note: "$I(a)$ とおき $a$ で微分 $\\implies I'(a) = \\int_0^\\pi \\frac{-2\\cos x + 2a}{1-2a\\cos x + a^2} dx = 0$<br>$\\implies I(0) = 0$ より、すべての $|a|<1$ で $I(a)=0$" },
+  { id: "L5_10", level: "5_超絶技巧レベル", key: "解析学の基本：デルタ関数的挙動", latexQ: "\\lim_{n \\to \\infty} \\int_0^1 nx^n f(x) \\,dx", latexA: "f(1)", note: "部分積分： $[\\frac{n}{n+1}x^{n+1}f(x)]_0^1 - \\int_0^1 \\frac{n}{n+1}x^{n+1}f'(x)dx$<br>$\\implies \\frac{n}{n+1}f(1) - (\\text{積分項} \\to 0) = f(1)$" },
+  { id: "L5_11", level: "5_超絶技巧レベル", key: "図形的発想の勝利：関数と逆関数の和", latexQ: "\\int_0^1 \\sqrt[3]{1-x^2} \\,dx + \\int_0^1 \\sqrt{1-x^3} \\,dx", latexA: "1", note: "$y = \\sqrt[3]{1-x^2}$ と $x = \\sqrt[3]{1-y^2}$ は互いに逆関数<br>$\\implies$ $1 \\times 1$ の正方形の面積を補完し合うため、合計は1となる" }
+];
+
+let topSel=null, midSel=null, botSel=null;
+let lock=false, modalOpen=false;
+let miss=0, match=0;
+let currentPairCount = 6;
+let currentRate = 0;
+
+const topArea = document.querySelector('#top');
+const midArea = document.querySelector('#mid');
+const bottomArea = document.querySelector('#bottom');
+const startModal = document.querySelector('#start-modal');
+const modal = document.querySelector('#modal');
+const mt = document.querySelector('#mt');
+const txt = document.querySelector('#txt');
+const btn = document.querySelector('#btn');
+const resetBtn = document.querySelector('#reset-btn');
+const startBtn = document.querySelector('#start-btn');
+const rateInput = document.querySelector('#input-rate');
+const rDisp = document.querySelector('#r-disp');
+
+function shuffle(a){ return a.sort(()=>Math.random()-0.5); }
+
+function renderMath() {
+    if(window.MathJax) MathJax.typesetPromise().catch((err) => console.log(err.message));
+}
+
+// レートからレベルを判定
+function getLevelFromRate(r) {
+    if(r <= 20) return 1;
+    if(r <= 40) return 2;
+    if(r <= 60) return 3;
+    if(r <= 80) return 4;
+    return 5;
+}
+
+// 指定レベルのデータを取得
+function getDataByLevel(lvl) {
+    let filtered = masterData.filter(d => parseInt(d.level.charAt(0)) === lvl);
+    return filtered.length > 0 ? filtered : masterData.filter(d => parseInt(d.level.charAt(0)) === 1); // fallback
+}
+
+// 配列からランダムにN個抽出
+function pickRandom(arr, n) {
+    let shuffled = shuffle([...arr]);
+    return shuffled.slice(0, Math.min(n, arr.length));
+}
+
+// カードDOMの生成
+function createCard(d, areaType){
+    let c = document.createElement('div');
+    c.className = 'card';
+
+    let wrapper = document.createElement('div');
+    wrapper.className = 'card-inner-wrapper';
+
+    let i = document.createElement('div');
+    i.className = 'inner';
+
+    let f = document.createElement('div');
+    f.className = 'front';
+    let fText = areaType === 'Q' ? '問題 (Q)' : (areaType === 'Key' ? '方針 (Key)' : '解答 (A)');
+    f.innerHTML = `${fText}<br><span style="font-size:10px; font-weight:normal;">(Tap)</span>`;
+
+    let b = document.createElement('div');
+    b.className = 'back math-text'; 
+    
+    // 中身のコンテンツ
+    let contentHtml = '';
+    if (areaType === 'Q') contentHtml = `\\( \\displaystyle ${d.latexQ} \\)`;
+    else if (areaType === 'Key') contentHtml = `<span style="font-size:0.9em; font-weight:bold;">${d.key}</span>`;
+    else contentHtml = `\\( \\displaystyle ${d.latexA} \\)`;
+    
+    b.innerHTML = `<div>${contentHtml}</div>`;
+
+    i.appendChild(f);
+    i.appendChild(b);
+    wrapper.appendChild(i);
+    c.appendChild(wrapper);
+
+    c.onclick = () => {
+        if(lock || modalOpen || c.classList.contains('matched')) return;
+
+        // すでに開いているカードをタップしたら閉じる
+        if (areaType === 'Q' && topSel && topSel.c === c) { c.classList.remove('flipped'); topSel = null; return; }
+        if (areaType === 'Key' && midSel && midSel.c === c) { c.classList.remove('flipped'); midSel = null; return; }
+        if (areaType === 'A' && botSel && botSel.c === c) { c.classList.remove('flipped'); botSel = null; return; }
+
+        c.classList.add('flipped');
+
+        // 各エリア1枚のみ保持
+        if(areaType === 'Q') { if(topSel) topSel.c.classList.remove('flipped'); topSel = {c, d}; }
+        else if(areaType === 'Key') { if(midSel) midSel.c.classList.remove('flipped'); midSel = {c, d}; }
+        else { if(botSel) botSel.c.classList.remove('flipped'); botSel = {c, d}; }
+
+        // 3枚揃った時の判定ロジック
+        if(topSel && midSel && botSel) {
+            lock = true;
+            setTimeout(() => {
+                let isMatch = (topSel.d.id === midSel.d.id) && (midSel.d.id === botSel.d.id);
+                let dTarget = topSel.d;
+
+                let modalBody = 
+                    `<div style="font-size:1.1em; margin:10px 0; padding:10px; border:2px solid #2196F3; border-radius:8px; text-align:center;">`+
+                    `\\( \\displaystyle ${dTarget.latexQ} = ${dTarget.latexA} \\)</div>`+
+                    `<div style="font-size:0.95em; text-align:left; background:#f4f4f4; padding:15px; border-radius:6px; line-height:1.6;">`+
+                    `<strong style="color:#0D47A1;">【方針】 ${dTarget.key}</strong><hr style="margin:8px 0; border:none; border-top:1px dashed #ccc;">`+
+                    `${dTarget.note}</div>`;
+
+                if(isMatch) {
+                    show('正解！', modalBody, () => {
+                        topSel.c.classList.add('matched');
+                        midSel.c.classList.add('matched');
+                        botSel.c.classList.add('matched');
+                        match++;
+                        resetSelection();
+                        if(match === currentPairCount) end();
+                    });
+                } else {
+                    miss++;
+                    document.getElementById('m').textContent = miss;
+                    show('ちがうよ', modalBody, () => {
+                        topSel.c.classList.remove('flipped');
+                        midSel.c.classList.remove('flipped');
+                        botSel.c.classList.remove('flipped');
+                        resetSelection();
+                    });
+                }
+            }, 600);
+        }
+    };
+    return c;
+}
+
+function resetSelection() { topSel = null; midSel = null; botSel = null; lock = false; }
+
+function show(title, body, cb) {
+    modalOpen = true;
+    mt.textContent = title;
+    txt.innerHTML = body;
+    modal.style.display = 'flex';
+    renderMath();
+    btn.onclick = () => {
+        modal.style.display = 'none';
+        modalOpen = false;
+        cb();
+    };
+}
+
+function end() {
+    let gain = currentPairCount === 6 ? Math.max(0, 35 - miss) : Math.max(0, 6 - miss);
+    currentRate += gain;
+    rDisp.textContent = currentRate;
+    rateInput.value = currentRate;
+    
+    show('ゲームクリア！', `
+        <div style="text-align:center; margin:10px 0;">
+            <div style="font-size:18px;">ミス: <b>${miss}</b>回</div>
+            <div style="font-size:24px; color:#E65100; margin-top:10px;">Rate: +${gain}</div>
+            <div style="font-size:20px; font-weight:bold; margin-top:5px;">New Rate: ${currentRate}</div>
+        </div>
+    `, () => {
+        document.getElementById('start-msg').innerHTML = "おめでとうございます！<br>新しいレートで次のゲームに挑戦しましょう。";
+        document.getElementById('start-title').textContent = "レベルアップ確認";
+        startModal.style.display = 'flex';
+    });
+}
+
+function setupGame() {
+    resetSelection();
+    match = 0; miss = 0;
+    document.getElementById('m').textContent = 0;
+    rDisp.textContent = currentRate;
+
+    const radios = document.getElementsByName('pairCount');
+    for (let r of radios) if (r.checked) currentPairCount = parseInt(r.value);
+
+    let lvl = getLevelFromRate(currentRate);
+    let gameData = [];
+
+    // レートに基づくスモールステップ抽出ロジック
+    if (currentPairCount === 6) {
+        let lCur = getDataByLevel(lvl);
+        let lUp = getDataByLevel(Math.min(5, lvl + 1));
+        let lDown = getDataByLevel(Math.max(1, lvl - 1));
+        
+        // lvl5の場合、上レベルがないので自身から補充
+        let pUp = pickRandom(lvl === 5 ? lCur : lUp, 2); 
+        let pDown = pickRandom(lvl === 1 ? lCur : lDown, 1);
+        let pCur = pickRandom(lCur, 3);
+        
+        gameData = [...pCur, ...pUp, ...pDown].slice(0, 6);
+    } else {
+        let lCur = getDataByLevel(lvl);
+        let lDown = getDataByLevel(Math.max(1, lvl - 1));
+        
+        let pDown = pickRandom(lvl === 1 ? lCur : lDown, 1);
+        let pCur = pickRandom(lCur, 2);
+        
+        gameData = [...pCur, ...pDown].slice(0, 3);
+    }
+
+    topArea.innerHTML = '';
+    midArea.innerHTML = '';
+    bottomArea.innerHTML = '';
+
+    shuffle([...gameData]).forEach(d => topArea.appendChild(createCard(d, 'Q')));
+    shuffle([...gameData]).forEach(d => midArea.appendChild(createCard(d, 'Key')));
+    shuffle([...gameData]).forEach(d => bottomArea.appendChild(createCard(d, 'A')));
+
+    renderMath();
+}
+
+startBtn.onclick = () => {
+    currentRate = parseInt(rateInput.value) || 0;
+    startModal.style.display = 'none';
+    setupGame();
+};
+
+resetBtn.onclick = () => {
+    document.getElementById('start-title').textContent = "リタイア";
+    document.getElementById('start-msg').innerHTML = "レートを設定し直して再挑戦できます。";
+    rateInput.value = currentRate;
+    startModal.style.display = 'flex';
+};
+
+})();
+</script>
+</div>
