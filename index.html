@@ -48,7 +48,7 @@ window.MathJax = {
     gap: 10px;
     background: #fafafa;
     padding: 10px;
-    max-height: 75vh;
+    max-height: none;
     overflow-y: auto;
 }
 
@@ -85,7 +85,7 @@ window.MathJax = {
 #math-game .card {
     width:100%;
     cursor:pointer;
-    perspective: 1000px;
+    perspective: 600px;
     position: relative;
     z-index: 1; /* 基本の重なり順 */
 }
@@ -100,7 +100,7 @@ window.MathJax = {
 #math-game .card-inner-wrapper {
     position:relative;
     width:100%;
-    padding-bottom:75%; 
+    padding-bottom:90%; 
 }
 
 #math-game .inner {
@@ -165,21 +165,36 @@ window.MathJax = {
 #math-game .card.selected .q-card-content {
     border: 3px solid #FF9800;
     background: #FFF3E0;
-    transform: scale(1.05);
+    box-shadow: 0 0 0 3px rgba(255,152,0,0.35);
     z-index: 10;
 }
 
 #math-game .math-text {
     font-size: clamp(12px, 3vw, 15px);
+
     width: 100%;
     height: 100%;
+
+    min-width: 0;
+    min-height: 0;
+
     display: flex;
-    flex-direction: column; /* 修正：折り返し対応 */
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
-    padding: 2px;
-    transform: translateZ(1px); 
-    overflow: visible; /* 修正：文字がはみ出しても消さない */
+    align-items: flex-start;
+
+    padding: 4px;
+
+    overflow-x: auto;
+    overflow-y: auto;
+
+    -webkit-overflow-scrolling: touch;
+
+    transform: translateZ(1px);
+}
+
+#math-game .math-text mjx-container {
+    white-space: nowrap;
 }
 
 #math-game .matched {
@@ -1255,7 +1270,8 @@ function checkMatch() {
                     background:#f4f4f4;
                     padding:15px;
                     border-radius:6px;
-                    line-height:1.6;
+                    line-height:1.8;
+                    white-space:normal;
                 ">
                     <strong style="color:#0D47A1;">【方針】 ${dTarget.key}</strong>
                 
@@ -1265,7 +1281,10 @@ function checkMatch() {
                         border-top:1px dashed #ccc;
                     ">
                 
-                    ${dTarget.note}
+                    ${dTarget.note
+                        .replace(/\n/g, '<br>')
+                        .replace(/\$\$(.*?)\$\$/g, '\\[$1\\]')
+                    }
                 </div>
                 `;
             if(isMatch) {
@@ -1287,10 +1306,26 @@ function checkMatch() {
 function resetSelection() { topSel = null; midSel = null; botSel = null; lock = false; }
 
 function show(title, body, cb) {
-    modalOpen = true; mt.textContent = title; txt.innerHTML = body; modal.style.display = 'flex';
-    MathJax.typesetClear([txt]); //　追加；一度掃除してから再 typeset するのが安全
-    renderMath([txt]);// 改良点：モーダルの中身だけを確実に再レンダリング
-    btn.onclick = () => { modal.style.display = 'none'; modalOpen = false; cb(); };
+    modalOpen = true;
+
+    mt.textContent = title;
+    txt.innerHTML = body;
+
+    modal.style.display = 'flex';
+
+    if (window.MathJax) {
+        MathJax.typesetClear([txt]);
+
+        requestAnimationFrame(() => {
+            MathJax.typesetPromise([txt]).catch(err => console.log(err));
+        });
+    }
+
+    btn.onclick = () => {
+        modal.style.display = 'none';
+        modalOpen = false;
+        cb();
+    };
 }
 
 function end() {
