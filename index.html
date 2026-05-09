@@ -1,6 +1,5 @@
 <div id="math-game" style="width:100%; max-width:900px; margin:auto; font-family:sans-serif; position: relative;">
 
-<!-- MathJaxの読み込み -->
 <script>
 window.MathJax = {
   tex: {
@@ -165,25 +164,18 @@ window.MathJax = {
 
 #math-game .math-text {
     font-size: clamp(12px, 3vw, 15px);
-
     width: 100%;
     height: 100%;
-
     min-width: 0;
     min-height: 0;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-
     padding: 4px;
-
     overflow-x: auto;
     overflow-y: auto;
-
     -webkit-overflow-scrolling: touch;
-
     transform: translateZ(1px);
 }
 
@@ -216,7 +208,7 @@ window.MathJax = {
     padding:20px;
     border-radius:10px;
     width:95%;
-    max-width:720px; /* ← 広げた */
+    max-width:720px;
     max-height: 85vh;
     display: flex;
     flex-direction: column;
@@ -247,13 +239,10 @@ window.MathJax = {
     border:2px solid #2196F3;
     border-radius:8px;
     text-align:center;
-
     overflow-x:auto;
     overflow-y:hidden;
-
     white-space:nowrap;
     -webkit-overflow-scrolling:touch;
-
     background:white;
 }
 </style>
@@ -299,7 +288,6 @@ window.MathJax = {
 <script>
 (function(){
 
-// masterData は省略せずそのまま保持
 const masterData = [
   // ==========================================
   // レベル1: 教科書レベル（積分の基本演算）
@@ -564,7 +552,7 @@ const masterData = [
   },
   {
     id: "L2_14",
-    level: "2_難関大入入試基礎レベル",
+    level: "2_難関大入試基礎レベル",
     key: "部分積分：多項式×指数関数",
     latexQ: "\\[ \\int x e^x \\,dx \\]",
     latexA: "\\[ (x-1)e^x + C \\]",
@@ -1106,7 +1094,7 @@ const masterData = [
     "⇒ \\[ I'(a) = \\int_0^\\pi \\frac{-2\\cos x + 2a}{1-2a\\cos x+a^2} dx \\]<br>" +
     "ここで \\[ \\tan(x/2)=t \\] 置換等により計算すると \\[ I'(a) = 0 \\] となる。<br>" +
     "よって I(a) は a に依存しない定数関数。<br>" +
-    "\\[ I(0) = \\int_0^\\pi \\log 1 dx = 0 \\] より、すべてのアブソリュート a < 1 で \\[ I(a) = 0 \\]。"
+    "\\[ I(0) = \\int_0^\\pi \\log 1 dx = 0 \\] より、すべての a < 1 で \\[ I(a) = 0 \\]。"
   },
   {
     id: "L5_10",
@@ -1164,7 +1152,6 @@ const rDisp = document.querySelector('#r-disp');
 
 function shuffle(a){ return a.sort(()=>Math.random()-0.5); }
 
-// 改良点：特定の要素のみを再描画対象にする
 function renderMath(targets = null) {
     if(window.MathJax) {
         if (targets) MathJax.typesetPromise(targets).catch((err) => console.log(err.message));
@@ -1192,12 +1179,11 @@ function createCard(d, areaType){
     let wrapper = document.createElement('div'); wrapper.className = 'card-inner-wrapper';
     let i = document.createElement('div'); i.className = 'inner';
 
-    // 改良点：問題(Q)は常に表、かつ条件式を分割して<br>で表示
     if (areaType === 'Q') {
         let qContent = document.createElement('div');
         qContent.className = 'q-card-content math-text';
         
-        // \\quad があれば分割して <br> を入れる【修正後】 余計な \[ と \] を取り除いてから使う
+        // 余計な \[ と \] を取り除いてから使う
         let qStr = d.latexQ.replace(/\\\[|\\\]/g, '').trim();
 
         if (qStr.includes('\\quad')) {
@@ -1222,17 +1208,13 @@ function createCard(d, areaType){
         return c;
     }
 
-    // Key と A は裏返るデザイン
     let f = document.createElement('div'); f.className = 'front';
     let fText = areaType === 'Key' ? '方針 (Key)' : '解答 (A)';
     f.innerHTML = `${fText}<br><span style="font-size:10px; font-weight:normal;">(Tap)</span>`;
 
     let b = document.createElement('div'); b.className = 'back'; 
 
-    // 【修正前】
-    // let contentHtml = areaType === 'Key' ? `<span style="font-size:0.85em; font-weight:bold;">${d.key}</span>` : `\\( \\displaystyle ${d.latexA} \\)`;
-    
-    // 【修正後】 d.latexA から取り除く処理を挟む
+    // d.latexA から取り除く処理を挟む
     let cleanA = d.latexA.replace(/\\\[|\\\]/g, '').trim();
     let contentHtml = areaType === 'Key' ? `<span style="font-size:0.85em; font-weight:bold;">${d.key}</span>` : `\\( \\displaystyle ${cleanA} \\)`;
   
@@ -1261,12 +1243,6 @@ function checkMatch() {
             let isMatch = (topSel.d.id === midSel.d.id) && (midSel.d.id === botSel.d.id);
             let dTarget = topSel.d;
             
-            // 【修正前】
-            // <div class="formula-box">
-            //     \\( \\displaystyle ${dTarget.latexQ} = ${dTarget.latexA} \\)
-            // </div>
-            
-            // 【修正後】
             let cleanQ_modal = dTarget.latexQ.replace(/\\\[|\\\]/g, '').trim();
             let cleanA_modal = dTarget.latexA.replace(/\\\[|\\\]/g, '').trim();
             
