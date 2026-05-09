@@ -1309,18 +1309,15 @@ function show(title, body, cb) {
     modalOpen = true;
 
     mt.textContent = title;
-    txt.innerHTML = body;
-
-    modal.style.display = 'flex';
-
-    if (window.MathJax) {
-        MathJax.typesetClear([txt]);
-
-        requestAnimationFrame(() => {
-            MathJax.typesetPromise([txt]).catch(err => console.log(err));
-        });
-    }
-
+    if (window.MathJax) MathJax.typesetClear([txt]); // ① 先にキャッシュクリア
+    txt.innerHTML = body;                              // ② HTMLを書き換え
+    modal.style.display = 'flex';                      // ③ モーダル表示
+    
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {                    // ④ 2フレーム待つ
+        if (window.MathJax) MathJax.typesetPromise([txt]); // ⑤ 組版
+      });
+    });
     btn.onclick = () => {
         modal.style.display = 'none';
         modalOpen = false;
