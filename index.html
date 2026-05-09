@@ -1197,8 +1197,9 @@ function createCard(d, areaType){
         let qContent = document.createElement('div');
         qContent.className = 'q-card-content math-text';
         
-        // \\quad があれば分割して <br> を入れる
-        let qStr = d.latexQ;
+        // \\quad があれば分割して <br> を入れる【修正後】 余計な \[ と \] を取り除いてから使う
+        let qStr = d.latexQ.replace(/\\\[|\\\]/g, '').trim();
+
         if (qStr.includes('\\quad')) {
             let parts = qStr.split('\\quad');
             qContent.innerHTML = `\\( \\displaystyle ${parts[0]} \\) <br> <span style="font-size:0.8em; opacity:0.8;">\\( ${parts[1]} \\)</span>`;
@@ -1227,7 +1228,14 @@ function createCard(d, areaType){
     f.innerHTML = `${fText}<br><span style="font-size:10px; font-weight:normal;">(Tap)</span>`;
 
     let b = document.createElement('div'); b.className = 'back'; 
-    let contentHtml = areaType === 'Key' ? `<span style="font-size:0.85em; font-weight:bold;">${d.key}</span>` : `\\( \\displaystyle ${d.latexA} \\)`;
+
+    // 【修正前】
+    // let contentHtml = areaType === 'Key' ? `<span style="font-size:0.85em; font-weight:bold;">${d.key}</span>` : `\\( \\displaystyle ${d.latexA} \\)`;
+    
+    // 【修正後】 d.latexA から取り除く処理を挟む
+    let cleanA = d.latexA.replace(/\\\[|\\\]/g, '').trim();
+    let contentHtml = areaType === 'Key' ? `<span style="font-size:0.85em; font-weight:bold;">${d.key}</span>` : `\\( \\displaystyle ${cleanA} \\)`;
+  
     b.innerHTML = `<div class="math-text">${contentHtml}</div>`;
 
     i.appendChild(f); i.appendChild(b); wrapper.appendChild(i); c.appendChild(wrapper);
@@ -1252,12 +1260,23 @@ function checkMatch() {
         setTimeout(() => {
             let isMatch = (topSel.d.id === midSel.d.id) && (midSel.d.id === botSel.d.id);
             let dTarget = topSel.d;
+            
+            // 【修正前】
+            // <div class="formula-box">
+            //     \\( \\displaystyle ${dTarget.latexQ} = ${dTarget.latexA} \\)
+            // </div>
+            
+            // 【修正後】
+            let cleanQ_modal = dTarget.latexQ.replace(/\\\[|\\\]/g, '').trim();
+            let cleanA_modal = dTarget.latexA.replace(/\\\[|\\\]/g, '').trim();
+            
             let modalBody =
                 `
                 <div class="formula-box">
-                    \\( \\displaystyle ${dTarget.latexQ} = ${dTarget.latexA} \\)
+                    \\( \\displaystyle ${cleanQ_modal} = ${cleanA_modal} \\)
                 </div>
-                
+
+          
                 <div style="
                     font-size:0.95em;
                     text-align:left;
