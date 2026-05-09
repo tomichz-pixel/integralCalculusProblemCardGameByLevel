@@ -1307,23 +1307,21 @@ function resetSelection() { topSel = null; midSel = null; botSel = null; lock = 
 
 function show(title, body, cb) {
     modalOpen = true;
-
     mt.textContent = title;
-    if (window.MathJax) MathJax.typesetClear([txt]); // ① 先にキャッシュクリア
-    txt.innerHTML = body;                              // ② HTMLを書き換え
-    modal.style.display = 'flex';                      // ③ モーダル表示
-    
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {                    // ④ 2フレーム待つ
-        if (window.MathJax) MathJax.typesetPromise([txt]); // ⑤ 組版
-      });
-    });
+    txt.innerHTML = body;
+    modal.style.display = 'flex';
+
+    if (window.MathJax) {
+        MathJax.typesetPromise().catch(err => console.log(err));
+    }
+
     btn.onclick = () => {
         modal.style.display = 'none';
         modalOpen = false;
         cb();
     };
 }
+
 
 function end() {
     let gain = currentPairCount === 6 ? 15 - miss :  3 - miss;
