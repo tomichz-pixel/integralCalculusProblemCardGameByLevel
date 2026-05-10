@@ -1313,7 +1313,7 @@ function show(title, body, cb) {
 
 
 function end() {
-    let gain = currentPairCount === 6 ? 15 - miss :  3 - miss;
+    let gain = currentPairCount === 6 ? 5 - miss :  2 - miss;
     currentRate += gain; rDisp.textContent = currentRate; rateInput.value = currentRate;
     show('ゲームクリア！', `<div style="text-align:center; margin:10px 0;"><div style="font-size:18px;">ミス: <b>${miss}</b>回</div><div style="font-size:24px; color:#E65100; margin-top:10px;">Rate: +${gain}</div><div style="font-size:20px; font-weight:bold; margin-top:5px;">New Rate: ${currentRate}</div></div>`, () => {
         document.getElementById('start-msg').innerHTML = "おめでとうございます！<br>新しいレートで次のゲームに挑戦しましょう。";
